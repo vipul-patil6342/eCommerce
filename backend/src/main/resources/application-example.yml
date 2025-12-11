@@ -1,0 +1,12 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: YOUR_GOOGLE_CLIENT_ID
+            client-secret: YOUR_GOOGLE_CLIENT_SECRET
+
+          github:
+            client-id: YOUR_GITHUB_CLIENT_ID
+            client-secret: YOUR_GITHUB_CLIENT_SECRET
