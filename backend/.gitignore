@@ -1,0 +1,76 @@
+# -------------------------
+# Maven / Build Artifacts
+# -------------------------
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Gradle (if exists)
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# -------------------------
+# Spring / Application Config
+# -------------------------
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+.env
+.env.*
+
+# -------------------------
+# STS / Eclipse
+# -------------------------
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# -------------------------
+# IntelliJ IDEA
+# -------------------------
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# -------------------------
+# NetBeans
+# -------------------------
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# -------------------------
+# VS Code
+# -------------------------
+.vscode/
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+logs/
+
+# -------------------------
+# OS junk files
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Temp / Cache
+# -------------------------
+*.cache
+tmp/
+temp/
