@@ -1,3 +1,5 @@
+/* This code snippet is defining a Redux slice using the `createSlice` function from the
+`@reduxjs/toolkit` package. Here's a breakdown of what the code is doing: */
 import { createSlice } from "@reduxjs/toolkit"
 import { getProducts } from "./ProductThunk";
 
@@ -25,7 +27,6 @@ export const productSlice = createSlice({
             .addCase(getProducts.fulfilled, (state,action) => {
                 state.loading = false;
                 state.items = action.payload;
-                console.log(state.items)
             })
             .addCase(getProducts.rejected, (state,action) => {
                 state.loading = false;

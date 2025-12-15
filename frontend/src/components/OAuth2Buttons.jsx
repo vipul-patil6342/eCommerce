@@ -12,7 +12,6 @@ const OAuth2Buttons = () => {
     }
 
     const handleGithubLogin = () => {
-        console.log('first')
         window.location.href = `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/github`;
     }
 

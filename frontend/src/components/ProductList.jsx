@@ -12,8 +12,6 @@ function ProductList() {
         dispatch(getProducts());
     }, [dispatch]);
 
-    console.log("Products => " , items)
-
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 

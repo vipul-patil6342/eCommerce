@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAuthState, loginUser, signupUser } from "./authThunk";
+import { getAuthState, loginUser, logoutUser, signupUser } from "./authThunk";
 
 const initialState = {
     isLoading: true,
     user: null,
-    email: null,
     error: null,
     isAuthenticated: false
 };
@@ -25,18 +24,12 @@ const authSlice = createSlice({
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(signupUser.fulfilled, (state, action) => {
+            .addCase(signupUser.fulfilled, (state) => {
                 state.isLoading = false;
-                state.user = action.payload.user;
-                state.email = action.payload.user?.username ?? null;
-                state.isAuthenticated = true;
             })
             .addCase(signupUser.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = action.payload;
-                state.isAuthenticated = false;
-                state.user = null;
-                state.email = null;
+                state.error = action.payload
             })
 
             // LOGIN
@@ -47,7 +40,6 @@ const authSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.user = action.payload.user;
-                state.email = action.payload.user?.username ?? null;
                 state.isAuthenticated = true;
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -55,7 +47,21 @@ const authSlice = createSlice({
                 state.error = action.payload;
                 state.isAuthenticated = false;
                 state.user = null;
-                state.email = null;
+            })
+
+            //LOGOUT USER
+            .addCase(logoutUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
+                state.isLoading = false;
+                state.user = null;
+                state.isAuthenticated = false;
+            })
+            .addCase(logoutUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
             })
 
             // AUTH STATE
@@ -65,12 +71,11 @@ const authSlice = createSlice({
             .addCase(getAuthState.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isAuthenticated = action.payload.authenticated;
-                state.email = action.payload.email ?? null;
+                state.user = action.payload;
             })
             .addCase(getAuthState.rejected, (state) => {
                 state.isLoading = false;
                 state.isAuthenticated = false;
-                state.email = null;
                 state.user = null;
             });
     }

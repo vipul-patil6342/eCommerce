@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, signupUser } from '../features/auth/authThunk';
+import { getAuthState, loginUser, signupUser } from '../features/auth/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
@@ -26,7 +26,7 @@ export default function SignupPage() {
         if(isAuthenticated){
             navigate("/products");
         }
-    },[dispatch]);
+    },[isAuthenticated , navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,6 +47,7 @@ export default function SignupPage() {
         const resultAction = await dispatch(loginUser(userData));
         if (loginUser.fulfilled.match(resultAction)) {
             navigate("/products");
+            dispatch(getAuthState());
             console.log("login successful");
         }
     };

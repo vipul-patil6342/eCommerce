@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -87,17 +88,21 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> getAuthState(
             @CookieValue(name = "refreshToken", required = false) String refreshToken) {
 
+        Map<String, Object> state = new HashMap<>();
+        state.put("authenticated", false);
+        state.put("roles", List.of());
+
         if (refreshToken == null || refreshToken.isBlank()) {
             log.debug("Auth state check: no refresh token");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.ok(state);
         }
 
         try {
             var verifiedToken = refreshTokenService.verifyRefreshToken(refreshToken);
             User user = verifiedToken.getUser();
 
-            Map<String, Object> state = new HashMap<>();
             state.put("authenticated", true);
+            state.put("name", user.getName());
             state.put("email", user.getUsername());
             state.put("userId", user.getId());
             state.put("roles", user.getRoles());

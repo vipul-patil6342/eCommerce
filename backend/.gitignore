@@ -22,6 +22,9 @@ application-*.yml
 .env
 .env.*
 
+!application-example.yml
+!application-example.properties
+
 # -------------------------
 # STS / Eclipse
 # -------------------------
