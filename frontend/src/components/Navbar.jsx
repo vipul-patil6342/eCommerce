@@ -32,23 +32,6 @@ const Navbar = () => {
                         </div>
 
 
-                        {isAuthenticated ?
-                            <div className="hidden lg:flex flex-1 max-w-md">
-                                <div className="w-full relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Search products..."
-                                        className={`w-full px-4 py-2.5 pl-10 rounded-lg text-sm transition-all outline-none border-0 focus:ring-0 focus:ring-offset-0 ${darkMode
-                                            ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700'
-                                            : 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-gray-50'
-                                            }`}
-                                    />
-                                    <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'
-                                        }`} />
-                                </div>
-                            </div> : " "
-                        }
-
                         <div className="flex items-center gap-6">
                             {isAuthenticated ?
                                 <>
@@ -89,21 +72,6 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {/* Mobile Search Bar */}
-                    <div className="lg:hidden mt-4">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                className={`w-full px-4 py-2.5 pl-10 rounded-lg text-sm transition-all outline-none border-0 focus:ring-0 focus:ring-offset-0 ${darkMode
-                                    ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700'
-                                    : 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-gray-50'
-                                    }`}
-                            />
-                            <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'
-                                }`} />
-                        </div>
-                    </div>
                 </div>
             </nav>
             <SidebarLayout isOpen={openSidebar} onClose={() => setOpenSidebar(false)} />

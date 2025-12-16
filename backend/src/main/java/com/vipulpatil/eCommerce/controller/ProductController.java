@@ -2,6 +2,7 @@ package com.vipulpatil.eCommerce.controller;
 
 import com.vipulpatil.eCommerce.dto.ProductRequestDto;
 import com.vipulpatil.eCommerce.dto.ProductResponseDto;
+import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +51,11 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id){
         ProductResponseDto response = productService.getProductById(id);
         return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponseDto>> searchProducts(@RequestParam String q){
+        return ResponseEntity.ok(productService.searchProducts(q));
     }
 }

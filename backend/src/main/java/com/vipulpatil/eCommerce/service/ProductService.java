@@ -5,7 +5,10 @@ import com.vipulpatil.eCommerce.dto.ProductResponseDto;
 import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,4 +70,8 @@ public class ProductService {
     }
 
 
+    public @Nullable List<ProductResponseDto> searchProducts(String q) {
+        Pageable pageable =PageRequest.of(0,10);
+        return productRepository.search( q.toLowerCase(), pageable);
+    }
 }

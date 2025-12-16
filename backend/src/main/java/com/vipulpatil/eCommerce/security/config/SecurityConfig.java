@@ -26,7 +26,7 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
