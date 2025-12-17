@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, Package, AlertCircle, TrendingUp } from 'lucide-react';
+import { Home, Package, AlertCircle, ClipboardList } from 'lucide-react';
 import InventoryManagement from '../components/InventoryManagement';
 import { useSelector } from 'react-redux';
 
@@ -13,7 +13,7 @@ const AdminPage = () => {
         { id: 'dashboard', label: 'Dashboard', icon: Home },
         { id: 'products', label: 'Products', icon: Package },
         { id: 'stock', label: 'Stock Alerts', icon: AlertCircle },
-        { id: 'sales', label: 'Sales', icon: TrendingUp }
+        { id: 'orders', label: 'Orders', icon: ClipboardList }
     ];
 
     return (
@@ -24,7 +24,7 @@ const AdminPage = () => {
                     <h1 className="text-2xl font-bold">Admin Panel</h1>
                 </div>
 
-                <nav className={`border-t ${darkMode ? 'border-gray-700' : 'border-slate-400'}`}>
+                <nav className={`border-t ${darkMode ? 'border-gray-700' : 'border-slate-200'}`}>
                     <div className="px-6 flex items-center gap-1 overflow-x-auto">
                         {menuItems.map((item) => {
                             const Icon = item.icon;
@@ -71,11 +71,11 @@ const AdminPage = () => {
                         </div>
                     )}
 
-                    {currentView === 'sales' && (
+                    {currentView === 'orders' && (
                         <div className="p-6">
                             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow border p-8 max-w-7xl mx-auto`}>
-                                <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Sales</h2>
-                                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>View sales and inventory analytics</p>
+                                <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Orders</h2>
+                                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>View orders and inventory analytics</p>
                             </div>
                         </div>
                     )}

@@ -10,8 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,14 +22,26 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final CloudinaryService cloudinaryService;
 
-    public ProductResponseDto addProduct(ProductRequestDto request){
+    public ProductResponseDto addProduct(ProductRequestDto request, MultipartFile file) throws IOException {
+
+        String imageUrl = null;
+        String publicId = null;
+
+        if (file != null && !file.isEmpty()) {
+            var uploadResult = cloudinaryService.uploadImage(file);
+            imageUrl = uploadResult.get("secure_url").toString();
+            publicId = uploadResult.get("public_id").toString();
+        }
+
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .category(request.getCategory())
-                .imageUrl(request.getImageUrl())
+                .imageUrl(imageUrl)
+                .publicId(publicId)
                 .stock(request.getStock())
                 .build();
 
@@ -35,7 +50,7 @@ public class ProductService {
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto request){
+    public ProductResponseDto updateProduct(Long id, ProductRequestDto request, MultipartFile file) throws IOException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product Not Found"));
 
@@ -43,26 +58,42 @@ public class ProductService {
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setCategory(request.getCategory());
-        product.setImageUrl(request.getImageUrl());
         product.setStock(request.getStock());
+
+        if (file != null && !file.isEmpty()) {
+            if (product.getPublicId() != null) {
+                cloudinaryService.deleteImage(product.getPublicId());
+            }
+
+            Map<String, Object> uploadResult = cloudinaryService.uploadImage(file);
+
+            product.setImageUrl(uploadResult.get("secure_url").toString());
+            product.setPublicId(uploadResult.get("public_id").toString());
+        }
 
         productRepository.save(product);
 
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
-    public void deleteProduct(Long id){
+    public void deleteProduct(Long id) throws IOException {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if(product.getPublicId() != null && !product.getPublicId().isBlank()){
+            cloudinaryService.deleteImage(product.getPublicId());
+        }
         productRepository.deleteById(id);
     }
 
-    public List<ProductResponseDto> getAllProducts(){
+    public List<ProductResponseDto> getAllProducts() {
         return productRepository.findAll()
                 .stream()
                 .map(product -> modelMapper.map(product, ProductResponseDto.class))
                 .toList();
     }
 
-    public ProductResponseDto getProductById(Long id){
+    public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product Not Found"));
 
@@ -71,7 +102,7 @@ public class ProductService {
 
 
     public @Nullable List<ProductResponseDto> searchProducts(String q) {
-        Pageable pageable =PageRequest.of(0,10);
-        return productRepository.search( q.toLowerCase(), pageable);
+        Pageable pageable = PageRequest.of(0, 10);
+        return productRepository.search(q.toLowerCase(), pageable);
     }
 }

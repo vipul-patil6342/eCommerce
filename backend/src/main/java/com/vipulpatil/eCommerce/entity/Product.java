@@ -31,6 +31,8 @@ public class Product {
 
     private String imageUrl;
 
+    private String publicId;
+
     @Column(nullable = false)
     private int stock;
 }

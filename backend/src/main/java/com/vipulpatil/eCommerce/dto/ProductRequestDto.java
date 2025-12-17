@@ -10,6 +10,5 @@ public class ProductRequestDto {
     private String description;
     private BigDecimal price;
     private String category;
-    private String imageUrl;
     private Integer stock;
 }

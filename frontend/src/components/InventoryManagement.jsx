@@ -12,10 +12,10 @@ export default function InventoryManagement() {
         price: '',
         category: '',
         image: null,
-        imagePreview: null,
+        imageUrl: null
     });
 
-    const { items } = useSelector(state => state.products);
+    const { items, loading } = useSelector(state => state.products);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
@@ -41,7 +41,7 @@ export default function InventoryManagement() {
                 setFormData(prev => ({
                     ...prev,
                     image: file,
-                    imagePreview: reader.result
+                    imageUrl: reader.result
                 }));
             };
             reader.readAsDataURL(file);
@@ -63,23 +63,37 @@ export default function InventoryManagement() {
             return;
         }
 
+        const multipartData = new FormData();
+
+        multipartData.append(
+            "product",
+            new Blob(
+                [
+                    JSON.stringify({
+                        name: formData.name,
+                        description: formData.description,
+                        category: formData.category,
+                        stock: Number(formData.stock),
+                        price: Number(formData.price)
+                    }),
+                ],
+                { type: "application/json" }
+            )
+        );
+
+        if(formData.image){
+            multipartData.append("image",formData.image)
+        }
+
         let resultAction;
 
         if (editingId) {
             resultAction = await dispatch(updateProduct({
                 id: editingId,
-                formData: {
-                    ...formData,
-                    stock: Number(formData.stock),
-                    price: Number(formData.price)
-                }
+                formData : multipartData
             }))
         } else {
-            resultAction = await dispatch(addProduct({
-                ...formData,
-                stock: Number(formData.stock),
-                price: Number(formData.price)
-            }));
+            resultAction = await dispatch(addProduct(multipartData));
         }
 
         if (resultAction.meta.requestStatus === "fulfilled") {
@@ -92,7 +106,7 @@ export default function InventoryManagement() {
                 price: '',
                 category: '',
                 image: null,
-                imagePreview: null,
+                imageUrl: null
             });
 
             setEditingId(null);
@@ -107,8 +121,8 @@ export default function InventoryManagement() {
             stock: String(product.stock || ''),
             price: String(product.price || ''),
             category: product.category,
-            image: null,
-            imagePreview: product.imagePreview
+            image : null,
+            imageUrl: product.imageUrl,
         });
         setEditingId(product.id);
         setShowForm(true);
@@ -124,7 +138,7 @@ export default function InventoryManagement() {
     };
 
     const handleCancel = () => {
-        setFormData({ name: '', description: '', stock: '', price: '', category: '', image: null, imagePreview: null });
+        setFormData({ name: '', description: '', stock: '', price: '', category: '', image: null, imageUrl: null });
         setEditingId(null);
         setShowForm(false);
     };
@@ -148,7 +162,7 @@ export default function InventoryManagement() {
                     {!showForm && (
                         <button
                             onClick={() => setShowForm(true)}
-                            className="flex items-center justify-center bg-blue-600 text-white px-3 py-2.5 rounded-lg hover:bg-blue-700 transition font-medium text-sm sm:px-4 sm:gap-2"
+                            className="flex items-center justify-center bg-orange-500 text-white px-3 py-2.5 rounded-lg hover:bg-orange-600 cursor-pointer transition font-medium text-sm sm:px-4 sm:gap-2"
                             title="Add Product"
                         >
                             <Plus size={18} />
@@ -192,7 +206,7 @@ export default function InventoryManagement() {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleInputChange}
-                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${darkMode
+                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none ${darkMode
                                         ? 'bg-gray-700 border-gray-600 text-white'
                                         : 'bg-white border-gray-300 text-gray-900'
                                         }`}
@@ -214,7 +228,7 @@ export default function InventoryManagement() {
                                         }`}
                                 />
                                 <input
-                                    type="text" 
+                                    type="text"
                                     name="stock"
                                     placeholder="Quantity"
                                     value={formData.stock}
@@ -232,14 +246,14 @@ export default function InventoryManagement() {
                                         }`}
                                 />
                                 <input
-                                    type="text"  
+                                    type="text"
                                     name="price"
                                     placeholder="Price"
                                     value={formData.price}
                                     onChange={(e) => {
                                         // Allow numbers and one decimal point
                                         const value = e.target.value.replace(/[^0-9.]/g, '');
-                                        
+
                                         setFormData(prev => ({
                                             ...prev,
                                             price: value
@@ -260,8 +274,8 @@ export default function InventoryManagement() {
                                             : 'bg-white border-gray-300 text-gray-900'
                                             }`}
                                     />
-                                    {formData.imagePreview && (
-                                        <img src={formData.imagePreview} alt="Preview" className="h-10 w-10 rounded object-cover" />
+                                    {formData.imageUrl && (
+                                        <img src={formData.imageUrl} alt="Preview" className="h-10 w-10 rounded object-cover" />
                                     )}
                                 </div>
                             </div>
@@ -269,9 +283,17 @@ export default function InventoryManagement() {
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <button
                                     onClick={handleSubmit}
+                                    disabled={loading}
                                     className="flex-1 bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-medium text-sm"
                                 >
-                                    {editingId ? 'Update Product' : 'Add Product'}
+                                    {loading? (
+                                        <>
+                                            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                                            <span>{editingId ? "Updating..." : "Adding..."}</span>
+                                        </>
+                                    ) : (
+                                        editingId ? "Update Product" : "Add Product"
+                                    )}
                                 </button>
                                 <button
                                     onClick={handleCancel}
@@ -318,8 +340,8 @@ export default function InventoryManagement() {
                                     items.map(product => (
                                         <tr key={product.id} className={`border-b transition ${darkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50'}`}>
                                             <td className="px-4 sm:px-6 py-4">
-                                                {product.imagePreview ? (
-                                                    <img src={product.imagePreview} alt={product.name} className="h-10 w-10 rounded object-cover" />
+                                                {product.imageUrl ? (
+                                                    <img src={product.imageUrl} alt={product.name} className="h-10 w-10 rounded object-cover" />
                                                 ) : (
                                                     <div className={`h-10 w-10 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
                                                 )}
@@ -367,8 +389,8 @@ export default function InventoryManagement() {
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex-1">
                                                 <div className="flex gap-3 items-start">
-                                                    {product.imagePreview ? (
-                                                        <img src={product.imagePreview} alt={product.name} className="h-12 w-12 rounded object-cover" />
+                                                    {product.imageUrl ? (
+                                                        <img src={product.imageUrl} alt={product.name} className="h-12 w-12 rounded object-cover" />
                                                     ) : (
                                                         <div className={`h-12 w-12 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
                                                     )}
