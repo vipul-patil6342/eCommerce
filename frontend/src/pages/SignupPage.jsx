@@ -171,7 +171,7 @@ export default function SignupPage() {
                 </div>
 
                 <div className={`hidden md:flex items-center justify-center p-8 ${darkMode
-                    ? 'bg-linear-to-br from-orange-500 to-yellow-400'
+                    ? '#101828'
                     : 'bg-linear-to-br from-orange-500 to-amber-500'
                     }`}>
                     <div className="text-center text-white max-w-md">

@@ -7,9 +7,12 @@ import com.vipulpatil.eCommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -80,17 +83,15 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        if(product.getPublicId() != null && !product.getPublicId().isBlank()){
+        if (product.getPublicId() != null && !product.getPublicId().isBlank()) {
             cloudinaryService.deleteImage(product.getPublicId());
         }
         productRepository.deleteById(id);
     }
 
-    public List<ProductResponseDto> getAllProducts() {
-        return productRepository.findAll()
-                .stream()
-                .map(product -> modelMapper.map(product, ProductResponseDto.class))
-                .toList();
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> modelMapper.map(product, ProductResponseDto.class));
     }
 
     public ProductResponseDto getProductById(Long id) {
@@ -104,5 +105,9 @@ public class ProductService {
     public @Nullable List<ProductResponseDto> searchProducts(String q) {
         Pageable pageable = PageRequest.of(0, 10);
         return productRepository.search(q.toLowerCase(), pageable);
+    }
+
+    public Page<ProductResponseDto> getProductsByCategory(String category, Pageable pageable) {
+        return productRepository.findByCategory(category, pageable);
     }
 }

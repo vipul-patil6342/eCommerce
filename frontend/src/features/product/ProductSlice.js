@@ -1,13 +1,38 @@
-/* This code snippet is defining a Redux slice using the `createSlice` function from the
-`@reduxjs/toolkit` package. Here's a breakdown of what the code is doing: */
 import { createSlice } from "@reduxjs/toolkit"
-import { addProduct, deleteProduct, getProducts, searchProduct, updateProduct } from "./ProductThunk";
+import { addProduct, deleteProduct, getProductById, getProducts, getProductsByCategory, searchProduct, updateProduct } from "./ProductThunk";
+
+const addThunkCase = (builder, thunk, isArray = true) => {
+    builder
+        .addCase(thunk.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(thunk.fulfilled, (state, action) => {
+            state.loading = false;
+            if (isArray) {
+                state.items = action.payload.content;
+                state.totalPages = action.payload.totalPages;
+                state.totalElements = action.payload.totalElements;
+            } else {
+                state.selectedProduct = action.payload;
+            }
+        })
+        .addCase(thunk.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        });
+};
 
 const initialState = {
     items: [],
     selectedProduct: null,
     loading: false,
-    error: null
+    error: null,
+    totalPages : 0,
+    totalElements : 0,
+    currentPage : 0,
+    sortBy : 'id',
+    direction : 'ASC'
 }
 
 export const productSlice = createSlice({
@@ -17,35 +42,25 @@ export const productSlice = createSlice({
         clearSelectedProduct: (state) => {
             state.selectedProduct = null;
         },
+        setCurrentPage : (state , action) =>{
+            state.currentPage = action.payload;
+        },
+        setSortBy : (state,action) =>{
+            state.sortBy = action.payload;
+            state.currentPage = 0;
+        },
+        setDirection : (state,action) =>{
+            state.direction = action.payload;
+            state.currentPage = 0;
+        }
     },
     extraReducers: (builder) => {
+        addThunkCase(builder, getProducts, true);
+        addThunkCase(builder, getProductsByCategory, true);
+        addThunkCase(builder, getProductById, false);
+        addThunkCase(builder, searchProduct, true);
+
         builder
-            .addCase(getProducts.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(getProducts.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload;
-            })
-            .addCase(getProducts.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            .addCase(searchProduct.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(searchProduct.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload;
-            })
-            .addCase(searchProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
             .addCase(addProduct.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -89,5 +104,5 @@ export const productSlice = createSlice({
     }
 });
 
-export const { clearSelectedProduct } = productSlice.actions;
+export const { clearSelectedProduct, setCurrentPage , setSortBy, setDirection } = productSlice.actions;
 export default productSlice.reducer;

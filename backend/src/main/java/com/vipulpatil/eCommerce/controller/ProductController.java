@@ -6,6 +6,10 @@ import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,18 +28,18 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestPart("product") ProductRequestDto request, @RequestPart("image")MultipartFile file) throws IOException {
+    public ResponseEntity<ProductResponseDto> addProduct(@RequestPart("product") ProductRequestDto request, @RequestPart("image") MultipartFile file) throws IOException {
         log.info("Product: {}", request);
         log.info("Image content type: {}", file.getContentType());
 
-        ProductResponseDto response = productService.addProduct(request,file);
+        ProductResponseDto response = productService.addProduct(request, file);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestPart("product") ProductRequestDto request , @RequestPart(value = "image", required = false) MultipartFile file) throws IOException {
-        ProductResponseDto response = productService.updateProduct(id, request,file);
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestPart("product") ProductRequestDto request, @RequestPart(value = "image", required = false) MultipartFile file) throws IOException {
+        ProductResponseDto response = productService.updateProduct(id, request, file);
         return ResponseEntity.ok(response);
     }
 
@@ -48,21 +52,30 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts(){
-        List<ProductResponseDto> products = productService.getAllProducts();
+    public ResponseEntity<Page<ProductResponseDto>> getAllProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+        Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
+        Page<ProductResponseDto> products = productService.getAllProducts(pageable);
         return ResponseEntity.ok(products);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id){
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id) {
         ProductResponseDto response = productService.getProductById(id);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResponseDto>> searchProducts(@RequestParam String q){
+    public ResponseEntity<List<ProductResponseDto>> searchProducts(@RequestParam String q) {
         return ResponseEntity.ok(productService.searchProducts(q));
+    }
+
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/category/{category}")
+    public ResponseEntity<Page<ProductResponseDto>> getProductsByCategory(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction, @PathVariable String category) {
+        Pageable pageable = PageRequest.of(page,12,Sort.by(direction,sortBy));
+        Page<ProductResponseDto> response = productService.getProductsByCategory(category,pageable);
+        return ResponseEntity.ok(response);
     }
 }

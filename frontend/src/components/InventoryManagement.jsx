@@ -28,9 +28,13 @@ export default function InventoryManagement() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (searchTerm.trim()) {
-            dispatch(searchProduct({ searchTerm }));
-        }
+        if (!searchTerm.trim()) return;
+
+        const delay = setTimeout(() => {
+            dispatch(searchProduct({searchTerm}));
+        }, 500);
+
+        return () => clearTimeout(delay)
     }, [searchTerm, dispatch])
 
     const handleImageChange = (e) => {

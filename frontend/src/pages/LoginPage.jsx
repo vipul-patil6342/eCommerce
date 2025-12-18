@@ -152,7 +152,7 @@ export default function SignupPage() {
                 {/* RIGHT SECTION */}
                 <div
                     className={`hidden md:flex items-center justify-center p-8 ${darkMode
-                        ? 'bg-linear-to-br from-orange-500 to-yellow-400'
+                        ? '#101828'
                         : 'bg-linear-to-br from-orange-500 to-amber-500'
                         }`}
                 >
