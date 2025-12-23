@@ -1,5 +1,6 @@
 package com.vipulpatil.eCommerce.security;
 
+import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.security.service.CustomUserDetailsService;
 import com.vipulpatil.eCommerce.security.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;

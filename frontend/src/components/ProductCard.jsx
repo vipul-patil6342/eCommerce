@@ -1,17 +1,44 @@
-import { ShoppingBag } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { ShoppingBag, Heart } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, getCart } from '../features/cart/cartThunk';
+import { showError, showSuccess } from '../utils/toast';
+import { getWishlist, toggleWishlist } from '../features/wishlist/wishlistThunk';
 
-function ProductCard({ product, onAddToCart }) {
+function ProductCard({ product }) {
 
+    const { items , loading } = useSelector(state => state.cart);
+    const { wishlistedItems = [] } = useSelector(state => state.wishlist);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
-    const handleAddToCart = () => {
-        if (onAddToCart) {
-            onAddToCart(product);
+    const dispatch = useDispatch();
+
+    const isAddedToCart = items.some((item) => item.productId === product.id);
+    const isWishlisted = wishlistedItems.some((item) => item.productId === product.id);
+
+    const handleAddToCart = async (product) => {
+        const cartData = {
+            productId: product.id,
+            quantity: 1
         }
-        console.log(`Added ${product.name} to cart`);
+
+        const resultAction = await dispatch(addToCart(cartData));
+        if (addToCart.fulfilled.match(resultAction)) {
+            dispatch(getCart());
+            showSuccess("Added to cart")
+        } else {
+            showError("Failed to add product")
+        }
     };
+
+    const handleWishlist = async (productId) => {
+        const resultAction = await dispatch(toggleWishlist({ productId }));
+        if(toggleWishlist.fulfilled.match(resultAction)){
+            dispatch(getWishlist());
+        }else{
+            showError("Wishlist update failed");
+        }
+    }
 
     const isOutOfStock = product.stock === 0;
     const isLowStock = product.stock < 20;
@@ -39,11 +66,26 @@ function ProductCard({ product, onAddToCart }) {
                     className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300"
                 />
 
-                {isOutOfStock && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <p className="text-white font-bold text-lg">Out of Stock</p>
+                {/* Wishlist Button */}
+                <button
+                    onClick={() => handleWishlist(product.id)}
+                    className="absolute top-2 right-2 p-2 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
+                    aria-label="Add to wishlist"
+                >
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: isWishlisted ? '#ef4444' : (darkMode ? '#d1d5db' : '#4b5563'),
+                        transition: 'color 200ms ease'
+                    }}>
+                        <Heart
+                            size={20}
+                            fill={isWishlisted ? 'currentColor' : 'none'}
+                            strokeWidth={2}
+                        />
                     </div>
-                )}
+                </button>
             </div>
 
             {/* Product Info */}
@@ -71,21 +113,23 @@ function ProductCard({ product, onAddToCart }) {
                 )}
 
                 <button
-                    disabled={isOutOfStock}
-                    onClick={handleAddToCart}
-                    className={`mt-auto w-full py-2.5 rounded font-semibold text-sm transition-all duration-200 active:scale-95
-                        flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed
-                        ${isOutOfStock
+                    disabled={isOutOfStock || loading || isAddedToCart}
+                    onClick={() => handleAddToCart(product)}
+                    className={`mt-auto w-full py-2.5 rounded font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed
+                        ${(isOutOfStock || isAddedToCart)
                             ? darkMode
                                 ? 'bg-gray-600 text-gray-400'
                                 : 'bg-gray-300 text-gray-500'
                             : darkMode
                                 ? 'bg-white text-black hover:bg-gray-200'
                                 : 'bg-black text-white hover:bg-gray-800'
-                        }`}
+                        }
+                        `}
                 >
                     <ShoppingBag size={16} />
-                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                    {isAddedToCart ? 'Added' : 
+                        isOutOfStock ? 'Out of Stock' : 'Add to Cart'
+                    }
                 </button>
             </div>
         </div>

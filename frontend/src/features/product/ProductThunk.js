@@ -22,10 +22,15 @@ export const getProducts = createAsyncThunk(
 
 export const searchProduct = createAsyncThunk(
     'products/searchProduct',
-    async ({ searchTerm }, thunkAPI) => {
+    async ({ searchTerm, pageNumber , sortBy, direction }, thunkAPI) => {
         try {
             const response = await axiosInstance.get("/products/search", {
-                params: { q: searchTerm }
+                params: { 
+                    q: searchTerm,
+                    page : pageNumber,
+                    sortBy,
+                    direction
+                }
             });
             return response.data;
         } catch (error) {

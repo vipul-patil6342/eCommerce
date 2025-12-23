@@ -3,7 +3,8 @@ import { Search, User, ShoppingBag, Moon, Sun, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../features/theme/themeSlice';
 import SidebarLayout from './SidebarLayout';
-import { searchProduct } from '../features/product/ProductThunk';
+import { searchProduct } from '../features/product/productThunk';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +16,7 @@ const Navbar = () => {
     const darkMode = theme === "dark";
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const searchRef = useRef(null);
 
@@ -33,6 +35,11 @@ const Navbar = () => {
             return () => clearTimeout(delay);
         }
     }, [dispatch, searchTerm]);
+
+
+    const handleCart = async () =>{
+        navigate("/cart");
+    }
 
     return (
         <>
@@ -81,6 +88,7 @@ const Navbar = () => {
                                                 : 'text-gray-700 hover:text-orange-600'
                                             }`}
                                         aria-label="Shopping Cart"
+                                        onClick={handleCart}
                                     >
                                         <ShoppingBag className="w-5 h-5" />
                                     </button>
@@ -114,7 +122,6 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {/* 🔍 Sliding Search Bar */}
                     <div
                         className={`absolute top-0 right-0 h-full flex items-center px-6
                         transition-all duration-300 ease-in-out

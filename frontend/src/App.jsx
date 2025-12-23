@@ -7,13 +7,16 @@ import NotFoundPage from './components/NotFoundPage'
 import ProductList from './components/ProductList'
 import { useEffect } from 'react'
 import { getAuthState } from './features/auth/authThunk'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import AdminPage from './pages/AdminPage'
 import ProtectRoute from './components/ProtectRoute'
+import Cart from './components/Cart'
+import Wishlist from './components/Wishlist'
 
 function App() {
 
-  const { user } = useSelector(state => state.auth)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,6 +25,15 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen">
+      <ToastContainer 
+        position="bottom-right"
+        autoClose={2000}
+        draggable
+        hideProgressBar={true}
+        newestOnTop
+        limit={3}
+      />
+
       <Navbar />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
@@ -31,6 +43,8 @@ function App() {
 
         <Route element={<ProtectRoute />}>
           <Route path="/products" element={<ProductList />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
         </Route>
 
         <Route element={<ProtectRoute role="ADMIN" />}>

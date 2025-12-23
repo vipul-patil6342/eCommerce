@@ -67,15 +67,16 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResponseDto>> searchProducts(@RequestParam String q) {
-        return ResponseEntity.ok(productService.searchProducts(q));
+    public ResponseEntity<Page<ProductResponseDto>> searchProducts(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+        Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
+        return ResponseEntity.ok(productService.searchProducts(q,pageable));
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/category/{category}")
     public ResponseEntity<Page<ProductResponseDto>> getProductsByCategory(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction, @PathVariable String category) {
-        Pageable pageable = PageRequest.of(page,12,Sort.by(direction,sortBy));
-        Page<ProductResponseDto> response = productService.getProductsByCategory(category,pageable);
+        Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
+        Page<ProductResponseDto> response = productService.getProductsByCategory(category, pageable);
         return ResponseEntity.ok(response);
     }
 }

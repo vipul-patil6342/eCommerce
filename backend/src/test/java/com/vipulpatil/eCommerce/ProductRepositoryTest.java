@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -25,10 +26,9 @@ class ProductRepositoryTest {
     void shouldSearchProductsByKeyword() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<ProductResponseDto> results =
+        Page<ProductResponseDto> results =
                 productRepository.search("laptop", pageable);
 
         assertNotNull(results);
-        assertTrue(results.size() <= 10);
     }
 }

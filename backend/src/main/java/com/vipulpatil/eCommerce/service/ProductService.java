@@ -8,15 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -102,8 +98,7 @@ public class ProductService {
     }
 
 
-    public @Nullable List<ProductResponseDto> searchProducts(String q) {
-        Pageable pageable = PageRequest.of(0, 10);
+    public @Nullable Page<ProductResponseDto> searchProducts(String q, Pageable pageable) {
         return productRepository.search(q.toLowerCase(), pageable);
     }
 

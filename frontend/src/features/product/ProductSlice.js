@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { addProduct, deleteProduct, getProductById, getProducts, getProductsByCategory, searchProduct, updateProduct } from "./ProductThunk";
+import { addProduct, deleteProduct, getProductById, getProducts, getProductsByCategory, searchProduct, updateProduct } from "./productThunk";
+
 
 const addThunkCase = (builder, thunk, isArray = true) => {
     builder

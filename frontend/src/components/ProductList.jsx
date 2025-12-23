@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts, getProductsByCategory } from "../features/product/ProductThunk";
+import { getProducts, getProductsByCategory } from "../features/product/productThunk";
 import ProductCard from "./ProductCard";
-import LoadingSkeleton from "./LoadingSkeleton";
-import { setCurrentPage, setDirection, setSortBy } from "../features/product/ProductSlice";
+import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { setCurrentPage, setDirection, setSortBy } from "../features/product/productSlice";
+import { getWishlist } from "../features/wishlist/wishlistThunk";
 
 function ProductList() {
 
@@ -34,6 +35,10 @@ function ProductList() {
             }));
         }
     }, [dispatch, selected, currentPage, sortBy, direction]);
+
+    useEffect(() => {
+        dispatch(getWishlist());
+    },[dispatch])
 
 
     const handleNextPage = () => {

@@ -8,9 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -34,6 +32,15 @@ public class User implements UserDetails{
     private String username;
 
     private String password;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addresses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<Wishlist> wishlists = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
 
     @Enumerated(EnumType.STRING)
     private AuthProviderType providerType;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Trash2, Edit2, Plus, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct, deleteProduct, searchProduct, updateProduct } from '../features/product/ProductThunk';
+import { addProduct, deleteProduct, searchProduct, updateProduct } from '../features/product/productThunk';
+import { showSuccess } from '../utils/toast';
 
 export default function InventoryManagement() {
 
@@ -15,7 +16,7 @@ export default function InventoryManagement() {
         imageUrl: null
     });
 
-    const { items, loading } = useSelector(state => state.products);
+    const { items, loading , error} = useSelector(state => state.products);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
@@ -101,8 +102,7 @@ export default function InventoryManagement() {
         }
 
         if (resultAction.meta.requestStatus === "fulfilled") {
-            console.log("added");
-
+            showSuccess("Product added successfully");
             setFormData({
                 name: '',
                 description: '',
@@ -136,7 +136,9 @@ export default function InventoryManagement() {
         if (window.confirm('Are you sure?')) {
             const resultAction = await dispatch(deleteProduct({ id }));
             if (deleteProduct.fulfilled.match(resultAction)) {
-                console.log(`deleted with id: ${id}`);
+                showSuccess("Product deleted successfully")
+            }else{
+                showError(error);
             }
         }
     };
