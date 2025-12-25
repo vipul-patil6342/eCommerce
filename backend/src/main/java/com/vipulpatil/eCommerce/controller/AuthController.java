@@ -1,9 +1,6 @@
 package com.vipulpatil.eCommerce.controller;
 
-import com.vipulpatil.eCommerce.dto.LoginRequestDto;
-import com.vipulpatil.eCommerce.dto.LoginResponseDto;
-import com.vipulpatil.eCommerce.dto.SignupRequestDto;
-import com.vipulpatil.eCommerce.dto.SignupResponseDto;
+import com.vipulpatil.eCommerce.dto.*;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.security.service.AuthService;
 import com.vipulpatil.eCommerce.security.service.JwtService;
@@ -85,45 +82,23 @@ public class AuthController {
     }
 
     @GetMapping("/state")
-    public ResponseEntity<Map<String, Object>> getAuthState(
+    public ResponseEntity<UserDto> getAuthState(
             @CookieValue(name = "refreshToken", required = false) String refreshToken) {
 
-        Map<String, Object> state = new HashMap<>();
-        state.put("authenticated", false);
-        state.put("roles", List.of());
+        return ResponseEntity.ok(authService.getAuthState(refreshToken));
 
-        if (refreshToken == null || refreshToken.isBlank()) {
-            log.debug("Auth state check: no refresh token");
-            return ResponseEntity.ok(state);
-        }
-
-        try {
-            var verifiedToken = refreshTokenService.verifyRefreshToken(refreshToken);
-            User user = verifiedToken.getUser();
-
-            state.put("authenticated", true);
-            state.put("name", user.getName());
-            state.put("email", user.getUsername());
-            state.put("userId", user.getId());
-            state.put("roles", user.getRoles());
-
-            log.debug("Auth state retrieved for user: {}", user.getUsername());
-            return ResponseEntity.ok(state);
-
-        } catch (Exception e) {
-            log.warn("Auth state check failed: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> logout(
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication != null && authentication.isAuthenticated()) {
                 User user = (User) authentication.getPrincipal();
-                refreshTokenService.deleteRefreshTokenByUser(user);
+                authService.logout(user, refreshToken);
                 log.info("User logout successful: {}", user.getUsername());
             }
 

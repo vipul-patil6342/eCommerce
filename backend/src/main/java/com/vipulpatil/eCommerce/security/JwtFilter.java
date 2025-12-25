@@ -36,7 +36,10 @@ public class JwtFilter extends OncePerRequestFilter {
             "/auth/signup",
             "/auth/refresh",
             "/auth/state",
-            "/oauth2/"
+            "/oauth2/",
+            "/send-email",
+            "/otp/send",
+            "/otp/verify"
     );
 
     @Override

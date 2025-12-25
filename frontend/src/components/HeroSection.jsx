@@ -1,13 +1,18 @@
-import { ShoppingBag } from 'lucide-react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
-    const theme = useSelector(state => state.theme.theme);
+
+    const { isAuthenticated } = useSelector(state => state.auth);
+    const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
     const navigate = useNavigate();
+
+    if(isAuthenticated){
+        navigate("/products");
+    }
 
     return (
         <div className={`w-full transition-colors duration-500 ${darkMode ? "bg-gray-900" : "bg-white"}`}>

@@ -1,9 +1,6 @@
 package com.vipulpatil.eCommerce.security.service;
 
-import com.vipulpatil.eCommerce.dto.LoginRequestDto;
-import com.vipulpatil.eCommerce.dto.LoginResponseDto;
-import com.vipulpatil.eCommerce.dto.SignupRequestDto;
-import com.vipulpatil.eCommerce.dto.SignupResponseDto;
+import com.vipulpatil.eCommerce.dto.*;
 import com.vipulpatil.eCommerce.entity.RefreshToken;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.entity.type.AuthProviderType;
@@ -14,6 +11,8 @@ import com.vipulpatil.eCommerce.service.RefreshTokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -37,6 +35,40 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final RefreshTokenService refreshTokenService;
 
+    @Cacheable(value = "state", key = "#refreshToken", condition = "#refreshToken != null && !#refreshToken.isBlank()")
+    public UserDto getAuthState(String refreshToken) {
+
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return new UserDto(false, null, null, null, List.of());
+        }
+
+        try {
+            RefreshToken token =
+                    refreshTokenService.verifyRefreshToken(refreshToken);
+
+            User user = token.getUser();
+
+            return new UserDto(
+                    true,
+                    user.getId(),
+                    user.getName(),
+                    user.getUsername(),
+                    user.getRoles()
+                            .stream()
+                            .map(Enum::name)
+                            .toList()
+            );
+
+        } catch (Exception e) {
+            return new UserDto(false, null, null, null, List.of());
+        }
+    }
+
+    @CacheEvict(value = "state", key = "#refreshToken")
+    public void evictAuthState(String refreshToken) {
+
+    }
+
     @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
         try {
@@ -48,6 +80,16 @@ public class AuthService {
             );
 
             User user = (User) authentication.getPrincipal();
+
+            if (user.getProviderType() == AuthProviderType.EMAIL
+                    && !user.isVerified()) {
+
+                log.warn("Login blocked: email not verified for {}", user.getUsername());
+                throw new BadCredentialsException(
+                        "Please verify your email before logging in"
+                );
+            }
+
             log.info("User logged in successfully: {}", user.getUsername());
 
             String accessToken = jwtService.createAccessToken(user);
@@ -71,6 +113,7 @@ public class AuthService {
             throw new IllegalStateException("User not found");
         }
 
+        evictAuthState(refreshTokenValue);
         String newAccessToken = jwtService.createAccessToken(user);
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
 
@@ -98,6 +141,7 @@ public class AuthService {
                 .username(request.getUsername())
                 .providerId(providerId)
                 .providerType(authProviderType)
+                .isVerified(authProviderType != AuthProviderType.EMAIL)
                 .roles(new HashSet<>(Set.of(RoleType.USER)))
                 .build();
 
@@ -120,6 +164,16 @@ public class AuthService {
     public SignupResponseDto signup(SignupRequestDto request) {
         User user = signupInternal(request, AuthProviderType.EMAIL, null);
         return new SignupResponseDto(user.getId(), user.getUsername());
+    }
+
+    public void logout(User user, String refreshToken) {
+        if (user == null) return;
+
+        if (refreshToken != null) {
+            evictAuthState(refreshToken);
+        }
+
+        refreshTokenService.deleteRefreshTokenByUser(user);
     }
 
     @Transactional

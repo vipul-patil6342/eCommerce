@@ -60,7 +60,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/send-email").permitAll()
                         .requestMatchers("/oauth2/**").permitAll()
+                        .requestMatchers("/otp/**").permitAll()
                         .requestMatchers("/products/**","/addresses/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
