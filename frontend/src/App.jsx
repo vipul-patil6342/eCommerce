@@ -6,7 +6,7 @@ import SignupPage from "./pages/SignupPage"
 import NotFoundPage from './pages/NotFoundPage'
 import ProductList from './components/ProductList'
 import { useEffect } from 'react'
-import { getAuthState } from './features/wishlist/authThunk'
+import { getAuthState } from './features/auth/authThunk'
 import { useDispatch } from 'react-redux'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

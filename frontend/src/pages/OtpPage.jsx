@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Clock } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser, verifyOtp } from '../features/wishlist/authThunk';
+import { signupUser, verifyOtp } from '../features/auth/authThunk';
 import { clearSignupData } from '../features/auth/authSlice';
 import { showError, showSuccess } from '../utils/toast';
 import { useNavigate } from 'react-router-dom';

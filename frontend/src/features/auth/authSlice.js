@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAuthState, loginUser, logoutUser, sendOtp, signupUser, verifyOtp } from "../wishlist/authThunk";
+import { getAuthState, loginUser, logoutUser, sendOtp, signupUser, verifyOtp } from "./authThunk";
 
 const initialState = {
     isLoading: true,

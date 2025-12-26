@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Github, Loader2, Moon, Sun } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendOtp, signupUser } from '../features/wishlist/authThunk';
+import { sendOtp, signupUser } from '../features/auth/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
 import { clearSignupData, setSignupData } from '../features/auth/authSlice';

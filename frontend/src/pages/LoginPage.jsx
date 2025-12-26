@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthState, loginUser, signupUser } from '../features/wishlist/authThunk';
+import { getAuthState, loginUser, signupUser } from '../features/auth/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
