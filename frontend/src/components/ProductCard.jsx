@@ -3,20 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, getCart } from '../features/cart/cartThunk';
 import { showError, showSuccess } from '../utils/toast';
 import { getWishlist, toggleWishlist } from '../features/wishlist/wishlistThunk';
+import { useNavigate } from 'react-router-dom';
 
 function ProductCard({ product }) {
 
-    const { items , loading } = useSelector(state => state.cart);
+    const { items, loading } = useSelector(state => state.cart);
     const { wishlistedItems = [] } = useSelector(state => state.wishlist);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const isAddedToCart = items.some((item) => item.productId === product.id);
     const isWishlisted = wishlistedItems.some((item) => item.productId === product.id);
 
-    const handleAddToCart = async (product) => {
+    const handleAddToCart = async (e, product) => {
+        e.stopPropagation();
+
         const cartData = {
             productId: product.id,
             quantity: 1
@@ -31,11 +35,13 @@ function ProductCard({ product }) {
         }
     };
 
-    const handleWishlist = async (productId) => {
+    const handleWishlist = async (e, productId) => {
+        e.stopPropagation();
+
         const resultAction = await dispatch(toggleWishlist({ productId }));
-        if(toggleWishlist.fulfilled.match(resultAction)){
+        if (toggleWishlist.fulfilled.match(resultAction)) {
             dispatch(getWishlist());
-        }else{
+        } else {
             showError("Wishlist update failed");
         }
     }
@@ -50,6 +56,7 @@ function ProductCard({ product }) {
                     ? 'bg-gray-800 hover:shadow-gray-700'
                     : 'bg-white'
                 }`}
+            onClick={() => navigate(`/products/${product.id}`)}
         >
 
             {/* Product Image */}
@@ -68,7 +75,7 @@ function ProductCard({ product }) {
 
                 {/* Wishlist Button */}
                 <button
-                    onClick={() => handleWishlist(product.id)}
+                    onClick={(e) => handleWishlist(e, product.id)}
                     className="absolute top-2 right-2 p-2 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
                     aria-label="Add to wishlist"
                 >
@@ -114,7 +121,7 @@ function ProductCard({ product }) {
 
                 <button
                     disabled={isOutOfStock || loading || isAddedToCart}
-                    onClick={() => handleAddToCart(product)}
+                    onClick={(e) => handleAddToCart(e, product)}
                     className={`mt-auto w-full py-2.5 rounded font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed
                         ${(isOutOfStock || isAddedToCart)
                             ? darkMode
@@ -127,7 +134,7 @@ function ProductCard({ product }) {
                         `}
                 >
                     <ShoppingBag size={16} />
-                    {isAddedToCart ? 'Added' : 
+                    {isAddedToCart ? 'Added' :
                         isOutOfStock ? 'Out of Stock' : 'Add to Cart'
                     }
                 </button>

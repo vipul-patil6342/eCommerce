@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, deleteProduct, searchProduct, updateProduct } from '../features/product/productThunk';
 import { showSuccess } from '../utils/toast';
 
-export default function InventoryManagement() {
+const InventoryManagement = () => {
 
     const [formData, setFormData] = useState({
         name: '',
@@ -13,10 +13,11 @@ export default function InventoryManagement() {
         price: '',
         category: '',
         image: null,
-        imageUrl: null
+        imageUrl: null,
+        brand: ''
     });
 
-    const { items, loading , error} = useSelector(state => state.products);
+    const { items, loading, error } = useSelector(state => state.products);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
@@ -32,7 +33,7 @@ export default function InventoryManagement() {
         if (!searchTerm.trim()) return;
 
         const delay = setTimeout(() => {
-            dispatch(searchProduct({searchTerm}));
+            dispatch(searchProduct({ searchTerm }));
         }, 500);
 
         return () => clearTimeout(delay)
@@ -63,7 +64,7 @@ export default function InventoryManagement() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.name || !formData.category || !formData.description || !formData.price || !formData.stock) {
+        if (!formData.name || !formData.category || !formData.description || !formData.price || !formData.stock || !formData.brand) {
             alert("All fields are required");
             return;
         }
@@ -76,6 +77,7 @@ export default function InventoryManagement() {
                 [
                     JSON.stringify({
                         name: formData.name,
+                        brand: formData.brand,
                         description: formData.description,
                         category: formData.category,
                         stock: Number(formData.stock),
@@ -86,8 +88,8 @@ export default function InventoryManagement() {
             )
         );
 
-        if(formData.image){
-            multipartData.append("image",formData.image)
+        if (formData.image) {
+            multipartData.append("image", formData.image)
         }
 
         let resultAction;
@@ -95,7 +97,7 @@ export default function InventoryManagement() {
         if (editingId) {
             resultAction = await dispatch(updateProduct({
                 id: editingId,
-                formData : multipartData
+                formData: multipartData
             }))
         } else {
             resultAction = await dispatch(addProduct(multipartData));
@@ -105,6 +107,7 @@ export default function InventoryManagement() {
             showSuccess("Product added successfully");
             setFormData({
                 name: '',
+                brand: '',
                 description: '',
                 stock: '',
                 price: '',
@@ -121,11 +124,12 @@ export default function InventoryManagement() {
     const handleEdit = (product) => {
         setFormData({
             name: product.name,
+            brand: product.brand,
             description: product.description,
             stock: String(product.stock || ''),
             price: String(product.price || ''),
             category: product.category,
-            image : null,
+            image: null,
             imageUrl: product.imageUrl,
         });
         setEditingId(product.id);
@@ -137,14 +141,14 @@ export default function InventoryManagement() {
             const resultAction = await dispatch(deleteProduct({ id }));
             if (deleteProduct.fulfilled.match(resultAction)) {
                 showSuccess("Product deleted successfully")
-            }else{
+            } else {
                 showError(error);
             }
         }
     };
 
     const handleCancel = () => {
-        setFormData({ name: '', description: '', stock: '', price: '', category: '', image: null, imageUrl: null });
+        setFormData({ name: '', description: '', stock: '', price: '', category: '', image: null, imageUrl: null, brand: '' });
         setEditingId(null);
         setShowForm(false);
     };
@@ -177,135 +181,179 @@ export default function InventoryManagement() {
                     )}
                 </div>
 
-                {/* Form Modal */}
+                {/* Form */}
                 {showForm && (
-                    <div className={`fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 sm:relative sm:bg-transparent sm:p-0`}>
-                        <div className={`rounded-lg shadow-md p-4 sm:p-6 mb-6 border w-full max-h-96 overflow-y-auto sm:max-h-none sm:relative ${darkMode
-                            ? 'bg-gray-800 border-gray-700'
-                            : 'bg-white border-gray-200'
-                            }`}>
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className={`text-lg sm:text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                        <div
+                            className={`relative w-full max-w-2xl rounded-xl shadow-2xl border overflow-hidden flex flex-col max-h-[90vh]
+                ${darkMode
+                                    ? 'bg-gray-800 border-gray-700'
+                                    : 'bg-white border-gray-200'
+                                }`}
+                        >
+                            {/* Header */}
+                            <div className={`sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b flex-shrink-0
+                                ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}
+                            `}>
+                                <h2 className={`text-lg sm:text-xl font-semibold
+                                    ${darkMode ? 'text-white' : 'text-gray-900'}
+                                `}>
                                     {editingId ? 'Edit Product' : 'Add New Product'}
                                 </h2>
+
                                 <button
                                     onClick={handleCancel}
-                                    className={`sm:hidden p-1 rounded transition ${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`p-1 rounded transition
+                                        ${darkMode
+                                            ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                                        }`}
                                 >
-                                    <X size={24} />
+                                    <X size={22} />
                                 </button>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Product Name"
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                                        }`}
-                                />
-                                <select
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleInputChange}
-                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white'
-                                        : 'bg-white border-gray-300 text-gray-900'
-                                        }`}
-                                >
-                                    <option value="">Select Category</option>
-                                    {categories.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                                <textarea
-                                    name="description"
-                                    placeholder="Description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    rows="2"
-                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition sm:col-span-2 ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                                        }`}
-                                />
-                                <input
-                                    type="text"
-                                    name="stock"
-                                    placeholder="Quantity"
-                                    value={formData.stock}
-                                    onChange={(e) => {
-                                        // Only allow numbers
-                                        const value = e.target.value.replace(/[^0-9]/g, '');
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            stock: value
-                                        }));
-                                    }}
-                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                                        }`}
-                                />
-                                <input
-                                    type="text"
-                                    name="price"
-                                    placeholder="Price"
-                                    value={formData.price}
-                                    onChange={(e) => {
-                                        // Allow numbers and one decimal point
-                                        const value = e.target.value.replace(/[^0-9.]/g, '');
+                            {/* Form Body - Scrollable */}
+                            <div className="flex-1 overflow-y-auto px-5 py-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            price: value
-                                        }));
-                                    }}
-                                    className={`px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                                        }`}
-                                />
-                                <div className="flex items-center gap-2">
                                     <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className={`flex-1 px-3 sm:px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${darkMode
-                                            ? 'bg-gray-700 border-gray-600 text-white'
-                                            : 'bg-white border-gray-300 text-gray-900'
-                                            }`}
+                                        name="name"
+                                        placeholder="Product Name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-3 py-2.5 rounded-lg border text-sm transition
+                                            ${darkMode
+                                                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                            } focus:outline-none`}
                                     />
-                                    {formData.imageUrl && (
-                                        <img src={formData.imageUrl} alt="Preview" className="h-10 w-10 rounded object-cover" />
-                                    )}
+
+                                    <input
+                                        name="brand"
+                                        placeholder="Brand"
+                                        value={formData.brand}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-3 py-2.5 rounded-lg border text-sm transition
+                                            ${darkMode
+                                                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                            } focus:outline-none`}
+                                    />
+
+                                    <select
+                                        name="category"
+                                        value={formData.category}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-3 py-2.5 rounded-lg border text-sm transition
+                                            ${darkMode
+                                                ? 'bg-gray-700 border-gray-600 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                : 'bg-white border-gray-300 text-gray-900 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                            } focus:outline-none`}
+                                    >
+                                        <option value="">Select Category</option>
+                                        {categories.map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+
+                                    <input
+                                        name="stock"
+                                        placeholder="Quantity"
+                                        value={formData.stock}
+                                        onChange={e =>
+                                            setFormData(p => ({
+                                                ...p,
+                                                stock: e.target.value.replace(/\D/g, '')
+                                            }))
+                                        }
+                                        className={`w-full px-3 py-2.5 rounded-lg border text-sm transition
+                                            ${darkMode
+                                                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                            } focus:outline-none`}
+                                    />
+
+                                    <input
+                                        name="price"
+                                        placeholder="Price"
+                                        value={formData.price}
+                                        onChange={e =>
+                                            setFormData(p => ({
+                                                ...p,
+                                                price: e.target.value.replace(/[^0-9.]/g, '')
+                                            }))
+                                        }
+                                        className={`w-full px-3 py-2.5 rounded-lg border text-sm transition
+                                            ${darkMode
+                                                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                            } focus:outline-none`}
+                                    />
+
+                                    <textarea
+                                        name="description"
+                                        rows="3"
+                                        placeholder="Description"
+                                        value={formData.description}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-3 py-2.5 rounded-lg border text-sm resize-none transition sm:col-span-2
+                                            ${darkMode
+                                                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                            } focus:outline-none`}
+                                    />
+
+                                    {/* Image Upload */}
+                                    <div className="sm:col-span-2 flex items-center gap-3">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className={`flex-1 px-3 py-2.5 text-sm border rounded-lg cursor-pointer transition
+                                                ${darkMode
+                                                    ? 'bg-gray-700 border-gray-600 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                    : 'bg-white border-gray-300 text-gray-900 focus:border-orange-500 focus:ring-1 focus:ring-orange-500'
+                                                } focus:outline-none`}
+                                        />
+
+                                        {formData.imageUrl && (
+                                            <img
+                                                src={formData.imageUrl}
+                                                alt="Preview"
+                                                className={`h-12 w-12 rounded object-cover border shrink-0
+                                                    ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-3">
+                            {/* Footer */}
+                            <div className={`sticky bottom-0 px-5 py-4 border-t flex flex-col sm:flex-row gap-3 shrink-0
+                                ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}
+                            `}>
                                 <button
                                     onClick={handleSubmit}
                                     disabled={loading}
-                                    className="flex-1 bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-medium text-sm"
+                                    className={`flex-1 text-white py-2.5 rounded-lg font-medium transition
+                                        ${loading
+                                            ? 'bg-green-500 cursor-not-allowed'
+                                            : 'bg-green-600 hover:bg-green-700 active:scale-95'
+                                        }`}
                                 >
-                                    {loading? (
-                                        <>
-                                            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                                            <span>{editingId ? "Updating..." : "Adding..."}</span>
-                                        </>
-                                    ) : (
-                                        editingId ? "Update Product" : "Add Product"
-                                    )}
+                                    {loading
+                                        ? editingId ? 'Updating...' : 'Adding...'
+                                        : editingId ? 'Update Product' : 'Add Product'
+                                    }
                                 </button>
+
                                 <button
                                     onClick={handleCancel}
-                                    className={`flex-1 py-2.5 rounded-lg transition font-medium text-sm ${darkMode
-                                        ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-                                        : 'bg-gray-300 text-gray-800 hover:bg-gray-400'
+                                    className={`flex-1 py-2.5 rounded-lg font-medium transition
+                                        ${darkMode
+                                            ? 'bg-gray-700 text-gray-200 hover:bg-gray-600 active:scale-95'
+                                            : 'bg-gray-300 text-gray-800 hover:bg-gray-400 active:scale-95'
                                         }`}
                                 >
                                     Cancel
@@ -448,3 +496,5 @@ export default function InventoryManagement() {
         </div>
     );
 }
+
+export default InventoryManagement;

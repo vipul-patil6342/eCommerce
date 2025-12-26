@@ -38,6 +38,7 @@ public class ProductService {
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
+                .brand(request.getBrand())
                 .category(request.getCategory())
                 .imageUrl(imageUrl)
                 .publicId(publicId)
@@ -55,6 +56,7 @@ public class ProductService {
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
+        product.setBrand(request.getBrand());
         product.setPrice(request.getPrice());
         product.setCategory(request.getCategory());
         product.setStock(request.getStock());

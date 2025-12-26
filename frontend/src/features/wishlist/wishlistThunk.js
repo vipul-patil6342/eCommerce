@@ -19,6 +19,7 @@ export const toggleWishlist = createAsyncThunk(
     async ({ productId }, thunkAPI) => {
         try {
             const response = await axiosInstance.post(`/wishlist/${productId}`);
+            console.log(response.data);
             return { productId, added: response.data };
         } catch (error) {
             return thunkAPI.rejectWithValue(getErrorMessage(error));

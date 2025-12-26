@@ -24,6 +24,9 @@ public class Address {
     private String pincode;
 
     @Column(nullable = false)
+    private String country;
+
+    @Column(nullable = false)
     private String state;
 
     @Column(nullable = false)

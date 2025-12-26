@@ -15,6 +15,7 @@ import ProtectRoute from './components/ProtectRoute'
 import Cart from './components/Cart'
 import Wishlist from './components/Wishlist'
 import OtpPage from './pages/OtpPage'
+import ProductDetails from './pages/ProductDetails'
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/products/:id" element={<ProductDetails />}/>
         </Route>
 
         <Route element={<ProtectRoute role="ADMIN" />}>

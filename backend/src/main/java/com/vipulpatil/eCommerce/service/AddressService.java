@@ -42,6 +42,7 @@ public class AddressService {
                 .state(request.getState())
                 .city(request.getCity())
                 .pincode(request.getPincode())
+                .country(request.getCountry())
                 .street(request.getStreet())
                 .house(request.getHouse())
                 .defaultAddress(request.isDefaultAddress())
@@ -80,6 +81,7 @@ public class AddressService {
         }
 
         address.setPhone(request.getPhone());
+        address.setCountry(request.getCountry());
         address.setState(request.getState());
         address.setCity(request.getCity());
         address.setPincode(request.getPincode());
