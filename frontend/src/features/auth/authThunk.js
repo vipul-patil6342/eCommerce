@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../utils/axiosInstance";
+import { getErrorMessage } from "../../utils/errorHelper";
 
 export const signupUser = createAsyncThunk(
     'auth/signup',
@@ -8,8 +9,7 @@ export const signupUser = createAsyncThunk(
             const response = await axiosInstance.post("/auth/signup", signupData);
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Registration Failed.';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -21,8 +21,7 @@ export const loginUser = createAsyncThunk(
             const response = await axiosInstance.post("/auth/login", userData);
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'login Failed.';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -34,8 +33,7 @@ export const logoutUser = createAsyncThunk(
             const response = await axiosInstance.post("/auth/logout");
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'logout Failed.';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -47,10 +45,8 @@ export const getAuthState = createAsyncThunk(
             const response = await axiosInstance.get("/auth/state");
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'login Failed.';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
-
     }
 )
 
@@ -61,10 +57,8 @@ export const sendOtp = createAsyncThunk(
             const response = await axiosInstance.post("/otp/send", { email });
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Send OTP Failed.';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
-
     }
 )
 
@@ -75,9 +69,7 @@ export const verifyOtp = createAsyncThunk(
             const response = await axiosInstance.post("/otp/verify", { email, otp });
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Verify OTP Failed.';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
-
     }
 )

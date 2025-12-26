@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../utils/axiosInstance";
+import { getErrorMessage } from "../../utils/errorHelper";
 
 export const addToCart = createAsyncThunk(
     'cart/addToCart',
@@ -8,8 +9,7 @@ export const addToCart = createAsyncThunk(
             const response = await axiosInstance.post("/cart/add", cartData);
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -21,8 +21,7 @@ export const getCart = createAsyncThunk(
             const response = await axiosInstance.get("/cart");
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -34,8 +33,7 @@ export const clearCart = createAsyncThunk(
             const response = await axiosInstance.delete("/cart/clear");
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -47,8 +45,7 @@ export const removeItem = createAsyncThunk(
             const response = await axiosInstance.delete(`/cart/remove/${productId}`);
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
@@ -57,15 +54,14 @@ export const updateQuantity = createAsyncThunk(
     'cart/updateQuantity',
     async ({ productId, quantity }, thunkAPI) => {
         try {
-            const response = await axiosInstance.patch(`/cart/update/${productId}`, {},{
-                params:{
+            const response = await axiosInstance.patch(`/cart/update/${productId}`, {}, {
+                params: {
                     quantity
                 }
             });
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.error || error.message || 'Failed';
-            return thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )

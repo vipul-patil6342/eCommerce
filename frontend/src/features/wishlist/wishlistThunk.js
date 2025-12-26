@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../utils/axiosInstance";
+import { getErrorMessage } from "../../utils/errorHelper";
 
 export const getWishlist = createAsyncThunk(
     'wishlist/getWishlist',
@@ -8,21 +9,19 @@ export const getWishlist = createAsyncThunk(
             const response = await axiosInstance.get("/wishlist");
             return response.data;
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed.';
-            thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
 
 export const toggleWishlist = createAsyncThunk(
     'wishlist/toggleWishlist',
-    async ({productId}, thunkAPI) => {
+    async ({ productId }, thunkAPI) => {
         try {
             const response = await axiosInstance.post(`/wishlist/${productId}`);
-            return{ productId, added : response.data};
+            return { productId, added: response.data };
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed.';
-            thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
