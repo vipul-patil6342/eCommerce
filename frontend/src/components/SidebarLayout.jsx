@@ -1,6 +1,6 @@
 import { X, ShoppingCart, Heart, Settings, LogOut, Home, User, UserCircle } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../features/auth/authThunk';
+import { logoutUser } from '../features/wishlist/authThunk';
 import { useNavigate, Link } from 'react-router-dom';
 
 const SidebarLayout = ({ isOpen, onClose }) => {

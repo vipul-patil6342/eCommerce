@@ -82,7 +82,7 @@ public class AuthService {
             User user = (User) authentication.getPrincipal();
 
             if (user.getProviderType() == AuthProviderType.EMAIL
-                    && !user.isVerified()) {
+                    && !user.isEmailVerified()) {
 
                 log.warn("Login blocked: email not verified for {}", user.getUsername());
                 throw new BadCredentialsException(
@@ -132,8 +132,12 @@ public class AuthService {
 
         User existing = userRepository.findByUsername(request.getUsername()).orElse(null);
         if (existing != null) {
-            log.warn("Signup attempt with existing username: {}", request.getUsername());
-            throw new IllegalArgumentException("Username already exists");
+            if(existing.isEmailVerified()){
+                log.warn("Signup attempt with existing username: {}", request.getUsername());
+                throw new IllegalArgumentException("Username already exists");
+            }
+
+            return existing;
         }
 
         User user = User.builder()
@@ -141,7 +145,7 @@ public class AuthService {
                 .username(request.getUsername())
                 .providerId(providerId)
                 .providerType(authProviderType)
-                .isVerified(authProviderType != AuthProviderType.EMAIL)
+                .emailVerified(authProviderType != AuthProviderType.EMAIL)
                 .roles(new HashSet<>(Set.of(RoleType.USER)))
                 .build();
 

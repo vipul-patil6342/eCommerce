@@ -20,9 +20,13 @@ public class EmailServiceImpl implements EmailService {
     @Async
     public void sendSimpleEmail(String to, String subject, String body) {
 
+        if(to == null || to.isBlank()){
+            throw new IllegalArgumentException("Recipient email cannot be null or blank");
+        }
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
-        message.setTo(to);
+        message.setTo(to.trim());
         message.setSubject(subject);
         message.setText(body);
 

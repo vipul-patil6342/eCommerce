@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthState, loginUser, signupUser } from '../features/auth/authThunk';
+import { getAuthState, loginUser, signupUser } from '../features/wishlist/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function SignupPage() {
 
-    const { isAuthenticated } = useSelector(state => state.auth);
+    const { isAuthenticated, isLoading } = useSelector(state => state.auth);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -126,9 +126,10 @@ export default function SignupPage() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg transition-all duration-200 cursor-pointer"
+                                disabled={isLoading}
+                                className="w-full flex items-center justify-center bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform focus:outline-none cursor-pointer"
                             >
-                                Login Now
+                                {isLoading ? <Loader2 className='w-5 h-5 animate-spin' /> : "Login Now"}
                             </button>
                         </form>
 

@@ -1,21 +1,24 @@
 import { useState } from 'react';
-import { Eye, EyeOff, Github, Moon, Sun } from 'lucide-react';
+import { Eye, EyeOff, Github, Loader2, Moon, Sun } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser } from '../features/auth/authThunk';
+import { sendOtp, signupUser } from '../features/wishlist/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
+import { clearSignupData, setSignupData } from '../features/auth/authSlice';
+import { showError, showSuccess } from '../utils/toast';
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
+        username: '',
         password: '',
         confirmPassword: ''
     });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setConfirmShowPassword] = useState(false);
 
-    const theme = useSelector(state => state.theme.theme);
+    const { isLoading , signupData} = useSelector(state => state.auth);
+    const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
     const dispatch = useDispatch();
@@ -42,14 +45,21 @@ export default function SignupPage() {
         }
 
         const userData = {
-            name: formData.name,
-            username: formData.email,
-            password: formData.password
+            name : formData.name,
+            username : formData.username,
+            password : formData.password
         }
+
+        dispatch(setSignupData(userData));
 
         const resultAction = await dispatch(signupUser(userData));
         if (signupUser.fulfilled.match(resultAction)) {
-            console.log("submitted");
+            dispatch(sendOtp({email : userData.username}));
+            showSuccess("OTP sent successfully");
+            navigate("/otp");
+        } else {
+            dispatch(clearSignupData());
+            showError("Error while sending OTP");
         }
     };
 
@@ -88,14 +98,14 @@ export default function SignupPage() {
                             </div>
 
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                                <label htmlFor="username" className="block text-sm font-medium mb-1">
                                     Email Address
                                 </label>
                                 <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
+                                    type="username"
+                                    id="username"
+                                    name="username"
+                                    value={formData.username}
                                     onChange={handleChange}
                                     placeholder="you@example.com"
                                     className={`w-full px-4 py-1 rounded-lg border transition-all duration-200 ${darkMode
@@ -134,7 +144,7 @@ export default function SignupPage() {
                                 </label>
                                 <div className='relative'>
                                     <input
-                                        type={showConfirmPassword? "text" : "password"} 
+                                        type={showConfirmPassword ? "text" : "password"}
                                         id="confirmPassword"
                                         name="confirmPassword"
                                         value={formData.confirmPassword}
@@ -153,9 +163,10 @@ export default function SignupPage() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform focus:outline-none cursor-pointer"
+                                disabled={isLoading}
+                                className="w-full flex items-center justify-center bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform focus:outline-none cursor-pointer"
                             >
-                                Create Account
+                                {isLoading ? <Loader2 className='w-5 h-5 animate-spin' /> : "Create Account"}
                             </button>
                         </form>
 

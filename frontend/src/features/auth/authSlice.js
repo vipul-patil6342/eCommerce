@@ -1,11 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAuthState, loginUser, logoutUser, signupUser } from "./authThunk";
+import { getAuthState, loginUser, logoutUser, sendOtp, signupUser, verifyOtp } from "../wishlist/authThunk";
 
 const initialState = {
     isLoading: true,
     user: null,
     error: null,
-    isAuthenticated: false
+    isAuthenticated: false,
+    signupData: {
+        name : "",
+        username : "",
+        password : ""
+    }
 };
 
 const authSlice = createSlice({
@@ -15,6 +20,15 @@ const authSlice = createSlice({
         resetError: (state) => {
             state.error = null;
         },
+        setSignupData: (state, action) => {
+            state.signupData = {
+                ...state.signupData,
+                ...action.payload
+            }
+        },
+        clearSignupData: (state) => {
+            state.signupData = null;
+        }
     },
 
     extraReducers: (builder) => {
@@ -77,9 +91,36 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.isAuthenticated = false;
                 state.user = null;
-            });
+            })
+
+            //Send OTP
+            .addCase(sendOtp.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(sendOtp.fulfilled, (state) => {
+                state.isLoading = false;
+                state.error = null;
+            })
+            .addCase(sendOtp.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            //Verify OTP
+            .addCase(verifyOtp.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(verifyOtp.fulfilled, (state) => {
+                state.isLoading = false;
+                state.error = null;
+            })
+            .addCase(verifyOtp.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
     }
 });
 
-export const { resetError } = authSlice.actions;
+export const { resetError, setSignupData, clearSignupData } = authSlice.actions;
 export default authSlice.reducer;

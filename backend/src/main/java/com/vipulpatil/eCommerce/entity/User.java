@@ -33,7 +33,8 @@ public class User implements UserDetails{
 
     private String password;
 
-    private boolean isVerified = false;
+    @Column(name = "email_verified" , nullable = false)
+    private boolean emailVerified = false;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses;

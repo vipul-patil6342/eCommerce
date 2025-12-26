@@ -3,9 +3,9 @@ import { axiosInstance } from "../../utils/axiosInstance";
 
 export const signupUser = createAsyncThunk(
     'auth/signup',
-    async (userData, thunkAPI) => {
+    async (signupData, thunkAPI) => {
         try {
-            const response = await axiosInstance.post("/auth/signup", userData);
+            const response = await axiosInstance.post("/auth/signup", signupData);
             return response.data;
         } catch (error) {
             const message = error.response?.data?.message || error.message || 'Registration Failed.';
@@ -45,9 +45,37 @@ export const getAuthState = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const response = await axiosInstance.get("/auth/state");
-            return response.data;           
+            return response.data;
         } catch (error) {
             const message = error.response?.data?.message || error.message || 'login Failed.';
+            return thunkAPI.rejectWithValue(message);
+        }
+
+    }
+)
+
+export const sendOtp = createAsyncThunk(
+    'auth/sendOtp',
+    async ({ email }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.post("/otp/send", { email });
+            return response.data;
+        } catch (error) {
+            const message = error.response?.data?.message || error.message || 'Send OTP Failed.';
+            return thunkAPI.rejectWithValue(message);
+        }
+
+    }
+)
+
+export const verifyOtp = createAsyncThunk(
+    'auth/verifyOtp',
+    async ({ email, otp }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.post("/otp/verify", { email, otp });
+            return response.data;
+        } catch (error) {
+            const message = error.response?.data?.message || error.message || 'Verify OTP Failed.';
             return thunkAPI.rejectWithValue(message);
         }
 

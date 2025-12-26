@@ -3,10 +3,10 @@ import HeroSection from "./components/HeroSection"
 import Navbar from "./components/Navbar"
 import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
-import NotFoundPage from './components/NotFoundPage'
+import NotFoundPage from './pages/NotFoundPage'
 import ProductList from './components/ProductList'
 import { useEffect } from 'react'
-import { getAuthState } from './features/auth/authThunk'
+import { getAuthState } from './features/wishlist/authThunk'
 import { useDispatch } from 'react-redux'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,7 @@ import AdminPage from './pages/AdminPage'
 import ProtectRoute from './components/ProtectRoute'
 import Cart from './components/Cart'
 import Wishlist from './components/Wishlist'
+import OtpPage from './pages/OtpPage'
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/otp" element={<OtpPage />} />
 
         <Route path="/" element={<HeroSection />} />
 

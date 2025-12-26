@@ -19,6 +19,10 @@ public class OtpService {
     private static final long OTP_EXPIRY_MINUTES = 5;
 
     public String generateAndSaveOtp(String email){
+
+        if(email == null || email.isBlank()){
+            throw new IllegalArgumentException("Email cannot be null or blank");
+        }
         String otp = otpUtil.generateOtp();
         storeOtpInRedis(email,otp);
         return otp;
@@ -54,7 +58,7 @@ public class OtpService {
         if(!isValid) return false;
 
         userRepository.findByUsername(email).ifPresent(user -> {
-            user.setVerified(true);
+            user.setEmailVerified(true);
             userRepository.save(user);
         });
 
