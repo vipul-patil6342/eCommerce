@@ -45,6 +45,7 @@ public class CartServiceTest {
         p.setCategory("testing");
         p.setPrice(BigDecimal.valueOf(100));
         p.setStock(stock);
+        p.setBrand("new");
         return p;
     }
 

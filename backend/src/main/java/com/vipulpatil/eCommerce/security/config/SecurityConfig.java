@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/send-email").permitAll()
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/otp/**").permitAll()
-                        .requestMatchers("/products/**","/addresses/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/products/**","/address/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

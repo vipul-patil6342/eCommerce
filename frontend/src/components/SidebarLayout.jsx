@@ -1,4 +1,4 @@
-import { X, ShoppingCart, Heart, Settings, LogOut, Home, User, UserCircle } from 'lucide-react';
+import { X, LogOut, Home, User, UserCircle } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../features/auth/authThunk';
 import { useNavigate, Link } from 'react-router-dom';
@@ -26,12 +26,6 @@ const SidebarLayout = ({ isOpen, onClose }) => {
     const menuItems = [
         { icon: Home, label: 'Home', to: '/products' },
         { icon: User, label: 'Profile', to: '/profile' },
-    ];
-
-    const secondaryMenuItems = [
-        { icon: ShoppingCart, label: 'My Orders', to: '/orders' },
-        { icon: Heart, label: 'Wishlist', to: '/wishlist' },
-        { icon: Settings, label: 'Settings', to: '/settings' },
     ];
 
     return (
@@ -85,22 +79,6 @@ const SidebarLayout = ({ isOpen, onClose }) => {
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
                     <nav className="space-y-1">
                         {menuItems.map(item => (
-                            <Link
-                                key={item.label}
-                                to={item.to}
-                                onClick={onClose}
-                                className="flex items-center px-4 py-3 rounded-lg hover:bg-blue-500/10"
-                            >
-                                <item.icon size={18} className="mr-3" />
-                                {item.label}
-                            </Link>
-                        ))}
-                    </nav>
-
-                    <div className="h-px bg-gray-700" />
-
-                    <nav className="space-y-1">
-                        {secondaryMenuItems.map(item => (
                             <Link
                                 key={item.label}
                                 to={item.to}

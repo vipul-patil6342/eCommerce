@@ -16,6 +16,7 @@ import Cart from './components/Cart'
 import Wishlist from './components/Wishlist'
 import OtpPage from './pages/OtpPage'
 import ProductDetails from './pages/ProductDetails'
+import ProfilePage from './pages/ProfilePage'
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen">
-      <ToastContainer 
+      <ToastContainer
         position="bottom-right"
         autoClose={2000}
         draggable
@@ -48,7 +49,8 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/products/:id" element={<ProductDetails />}/>
+          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
 
         <Route element={<ProtectRoute role="ADMIN" />}>

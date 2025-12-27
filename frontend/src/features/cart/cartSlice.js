@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { addToCart, getCart, removeItem, updateQuantity,clearCart} from "./cartThunk"
+import { addToCart, getCart, removeItem, updateQuantity, clearCart } from "./cartThunk"
 
 const initialState = {
     loading: false,
@@ -14,7 +14,7 @@ export const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        
+
         clearError: (state) => {
             state.error = null;
         }
@@ -87,7 +87,7 @@ export const cartSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             });
-            // Clear Cart
+        // Clear Cart
         builder
             .addCase(clearCart.pending, (state) => {
                 state.loading = true;
