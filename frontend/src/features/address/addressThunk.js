@@ -25,3 +25,39 @@ export const getAddresses = createAsyncThunk(
         }
     }
 )
+
+export const updateAddress = createAsyncThunk(
+    'address/updateAddress',
+    async ({ addressId, addressData }, ThunkAPI) => {
+        try {
+            const response = await axiosInstance.put(`/address/${addressId}`, addressData);
+            return response.data;
+        } catch (error) {
+            return ThunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+
+export const deleteAddress = createAsyncThunk(
+    'address/deleteAddress',
+    async (addressId, ThunkAPI) => {
+        try {
+            const response = await axiosInstance.delete(`/address/${addressId}`);
+            return response.data;
+        } catch (error) {
+            return ThunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+
+export const setDefaultAddress = createAsyncThunk(
+    'address/setDefaultAddress',
+    async (addressId, ThunkAPI) => {
+        try {
+            const response = await axiosInstance.put(`/address/${addressId}/set-default`);
+            return response.data;
+        } catch (error) {
+            return ThunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
