@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,5 +41,11 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    @OneToMany(mappedBy = "product" , cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+    private double averageRating;
+
+    private int reviewCount;
 
 }

@@ -12,7 +12,6 @@ import com.vipulpatil.eCommerce.repository.CartRepository;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

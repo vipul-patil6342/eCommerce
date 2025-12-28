@@ -14,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("""
             SELECT new com.vipulpatil.eCommerce.dto.ProductResponseDto(
-            p.id,p.name,p.description,p.category,p.price,p.imageUrl,p.stock,p.brand
+            p.id,p.name,p.description,p.category,p.price,p.imageUrl,p.stock,p.brand,p.averageRating,p.reviewCount
             )
             FROM Product p
             WHERE LOWER(p.name) LIKE %:q%
@@ -23,7 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     Page<ProductResponseDto> search(@Param("q") String q, Pageable pageable);
 
-    @Query("SELECT new com.vipulpatil.eCommerce.dto.ProductResponseDto( p.id,p.name,p.description,p.category,p.price,p.imageUrl,p.stock,p.brand)"+
+    @Query("SELECT new com.vipulpatil.eCommerce.dto.ProductResponseDto( p.id,p.name,p.description,p.category,p.price,p.imageUrl,p.stock,p.brand,p.averageRating,p.reviewCount)"+
             "FROM Product p WHERE LOWER(p.category) = LOWER(:category)")
     Page<ProductResponseDto> findByCategory(@Param("category") String category, Pageable pageable);
 }

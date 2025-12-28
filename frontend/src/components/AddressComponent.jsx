@@ -180,7 +180,7 @@ const AddressComponent = () => {
                             <div className="flex gap-3 pt-4">
                                 <button
                                     onClick={handleSubmit}
-                                    className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:shadow-lg hover:shadow-orange-200 font-semibold transition"
+                                    className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold transition"
                                 >
                                     Add Address
                                 </button>

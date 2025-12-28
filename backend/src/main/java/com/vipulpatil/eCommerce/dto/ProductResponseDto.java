@@ -18,4 +18,6 @@ public class ProductResponseDto {
     private String imageUrl;
     private Integer stock;
     private String brand;
+    private double averageRating;
+    private int reviewCount;
 }
