@@ -4,6 +4,7 @@ import { getAuthState, loginUser } from '../features/auth/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { CustomLoading } from '../components/LoadingSkeleton';
 
 export default function LoginPage() {
     const { isAuthenticated, isLoading, error: authError } = useSelector(state => state.auth);
@@ -25,6 +26,12 @@ export default function LoginPage() {
             navigate("/products");
         }
     }, [isAuthenticated, navigate]);
+
+    if (isLoading) {
+        return (
+            <CustomLoading darkMode={darkMode} />
+        );
+    }
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -159,14 +166,7 @@ export default function LoginPage() {
                                 disabled={isLoading}
                                 className="w-full flex items-center justify-center bg-orange-400 hover:bg-orange-500 disabled:bg-orange-300 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform focus:outline-none cursor-pointer"
                             >
-                                {isLoading ? (
-                                    <span className="flex items-center gap-2">
-                                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                        Logging in...
-                                    </span>
-                                ) : (
-                                    "Login Now"
-                                )}
+                                Login Now
                             </button>
                         </div>
 

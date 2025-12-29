@@ -1,13 +1,11 @@
 package com.vipulpatil.eCommerce.repository;
 
-import com.vipulpatil.eCommerce.dto.ReviewResponseDto;
 import com.vipulpatil.eCommerce.entity.Review;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
@@ -18,7 +16,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Long countByProductId(Long productId);
 
-    Page<Review> findByProductId(Long productId, Pageable pageable);
+    @Query(value = "SELECT * FROM reviews WHERE product_id = :productId ORDER BY created_at DESC LIMIT 5", nativeQuery = true)
+    List<Review> findByProductId(@Param("productId") Long productId);
 
     Optional<Review> findByIdAndUserId(Long reviewId, Long userId);
 }

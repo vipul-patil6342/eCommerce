@@ -104,19 +104,17 @@ public class CartService {
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId)
                 .orElseThrow(() -> new RuntimeException("Product not found in cart"));
 
-        int newQuantity = item.getQuantity() + quantity;
-
-        if (newQuantity <= 0) {
+        if (quantity <= 0) {
             return removeFromCart(user, productId);
         }
 
         Product product = item.getProduct();
 
-        if (product.getStock() < newQuantity) {
+        if (product.getStock() < quantity) {
             throw new RuntimeException("Insufficient stock");
         }
 
-        item.setQuantity(newQuantity);
+        item.setQuantity(quantity);
         cartItemRepository.save(item);
 
         cart.setUpdatedAt(LocalDateTime.now());

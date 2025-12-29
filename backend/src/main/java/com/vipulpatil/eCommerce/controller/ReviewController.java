@@ -6,12 +6,13 @@ import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reviews")
@@ -33,12 +34,10 @@ public class ReviewController {
 
     @GetMapping("/product/{productId}")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public ResponseEntity<Page<ReviewResponseDto>> getReviews(
-            @PathVariable Long productId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+    public ResponseEntity<List<ReviewResponseDto>> getReviews(
+            @PathVariable Long productId
     ) {
-        return ResponseEntity.ok(reviewService.getReviews(productId, page, size));
+        return ResponseEntity.ok(reviewService.getReviews(productId));
     }
 
     @PutMapping("/{reviewId}")

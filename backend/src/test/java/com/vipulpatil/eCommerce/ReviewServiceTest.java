@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,6 +50,10 @@ public class ReviewServiceTest {
 
     @BeforeEach
     void setUp(){
+        reviewRepository.deleteAll();
+        productRepository.deleteAll();
+        userRepository.deleteAll();
+
         user = User.builder()
                 .name("vipul")
                 .username("vipul@gmail.com")
@@ -109,7 +114,7 @@ public class ReviewServiceTest {
         requestDto.setRating(5);
         requestDto.setComment("Excellent");
 
-        var response = reviewService.addReview(product.getId(), user, requestDto);
+        var response = reviewService.addReview(product.getId(), newUser, requestDto);
 
         assertNotNull(response);
         assertEquals(5, response.getRating());
@@ -117,9 +122,9 @@ public class ReviewServiceTest {
         Product updatedProduct = productRepository.findById(product.getId()).orElseThrow();
 
         assertEquals(5.0, updatedProduct.getAverageRating());
-        assertEquals(1, updatedProduct.getReviewCount());
+        assertEquals(2, updatedProduct.getReviewCount());
 
-        assertEquals(1, reviewRepository.countByProductId(product.getId()));
+        assertEquals(2, reviewRepository.countByProductId(product.getId()));
     }
 
     @Test
@@ -127,8 +132,6 @@ public class ReviewServiceTest {
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setRating(4);
         requestDto.setComment("good");
-
-        reviewService.addReview(product.getId(), user, requestDto);
 
         RuntimeException ex = assertThrows(
                 RuntimeException.class,
@@ -141,24 +144,27 @@ public class ReviewServiceTest {
 
     @Test
     void updateReview_shouldUpdateReview(){
-
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setRating(5);
         requestDto.setComment("nice");
 
-        reviewService.addReview(product.getId(),user,requestDto);
+        ReviewResponseDto response =
+                reviewService.updateReview(review.getId(), user, requestDto);
 
-        Product updated = productRepository.findById(product.getId()).orElseThrow();
+        assertEquals(5, response.getRating());
+        assertEquals("nice", response.getComment());
 
-        assertEquals(4,updated.getAverageRating());
-        assertEquals(2,updated.getReviewCount());
+        Review updated =
+                reviewRepository.findById(review.getId()).orElseThrow();
+
+        assertEquals(5, updated.getRating());
+        assertEquals("nice", updated.getComment());
     }
 
     @Test
     void getReviews_shouldGetReviews(){
-        Page<ReviewResponseDto> result = reviewService.getReviews(product.getId(),0,10);
-        assertEquals(1,result.getTotalElements());
-        assertEquals(1,result.getContent().size());
+        List<ReviewResponseDto> result = reviewService.getReviews(product.getId());
+        assertEquals(1,result.size());
     }
 
     @Test

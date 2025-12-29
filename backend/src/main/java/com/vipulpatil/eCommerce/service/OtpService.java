@@ -3,6 +3,7 @@ package com.vipulpatil.eCommerce.service;
 import com.vipulpatil.eCommerce.repository.UserRepository;
 import com.vipulpatil.eCommerce.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OtpService {
 
     private final StringRedisTemplate template;
@@ -19,7 +21,7 @@ public class OtpService {
     private static final long OTP_EXPIRY_MINUTES = 5;
 
     public String generateAndSaveOtp(String email){
-
+        log.info("OTP generation requested for email={}", email);
         if(email == null || email.isBlank()){
             throw new IllegalArgumentException("Email cannot be null or blank");
         }
@@ -29,6 +31,7 @@ public class OtpService {
     }
 
     private void storeOtpInRedis(String email, String otp) {
+        log.debug("Storing OTP in Redis with key=otp:{}", email);
         template.opsForValue().set(
                 "otp:" + email ,
                 otp,

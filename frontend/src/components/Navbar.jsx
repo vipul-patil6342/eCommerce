@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, User, ShoppingBag, Moon, Sun, X } from 'lucide-react';
+import { Search, User, ShoppingBag, Moon, Sun, X, Home } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../features/theme/themeSlice';
 import SidebarLayout from './SidebarLayout';
@@ -36,9 +36,12 @@ const Navbar = () => {
         }
     }, [dispatch, searchTerm]);
 
-
-    const handleCart = async () =>{
+    const handleCart = async () => {
         navigate("/cart");
+    }
+
+    const handleHome = () => {
+        navigate("/products");
     }
 
     return (
@@ -64,6 +67,22 @@ const Navbar = () => {
                                 </span>
                             </span>
                         </div>
+
+                        {isAuthenticated && (
+                            <div className="hidden w-full md:flex md:justify-end gap-6">
+                                <button
+                                    onClick={handleHome}
+                                    className={`p-2 transition-colors
+                                    ${darkMode
+                                            ? 'text-gray-300 hover:text-orange-500'
+                                            : 'text-gray-700 hover:text-orange-600'
+                                        }`}
+                                    aria-label="Home"
+                                >
+                                    <Home className="w-5 h-5" />
+                                </button>
+                            </div>
+                        )}
 
                         {/* Right Icons */}
                         <div className="flex items-center gap-4 relative">

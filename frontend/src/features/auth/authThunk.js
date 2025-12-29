@@ -57,6 +57,7 @@ export const sendOtp = createAsyncThunk(
             const response = await axiosInstance.post("/otp/send", { email });
             return response.data;
         } catch (error) {
+            console.log(error)
             return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
@@ -69,6 +70,7 @@ export const verifyOtp = createAsyncThunk(
             const response = await axiosInstance.post("/otp/verify", { email, otp });
             return response.data;
         } catch (error) {
+            console.log(error)
             return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }

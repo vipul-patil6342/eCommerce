@@ -2,14 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getAuthState, loginUser, logoutUser, sendOtp, signupUser, verifyOtp } from "./authThunk";
 
 const initialState = {
-    isLoading: true,
+    isLoading: false,
     user: null,
     error: null,
     isAuthenticated: false,
     signupData: {
-        name : "",
-        username : "",
-        password : ""
+        name: "",
+        username: "",
+        password: ""
     }
 };
 
@@ -95,10 +95,13 @@ const authSlice = createSlice({
 
             //Send OTP
             .addCase(sendOtp.pending, (state) => {
+                console.error(">>> generateAndSaveOtp CALLED <<<");
+
                 state.isLoading = true;
                 state.error = null;
             })
             .addCase(sendOtp.fulfilled, (state) => {
+
                 state.isLoading = false;
                 state.error = null;
             })
@@ -108,6 +111,7 @@ const authSlice = createSlice({
             })
             //Verify OTP
             .addCase(verifyOtp.pending, (state) => {
+                console.error(">>> verifyOtp CALLED <<<");
                 state.isLoading = true;
                 state.error = null;
             })

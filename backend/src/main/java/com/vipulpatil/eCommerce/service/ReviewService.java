@@ -9,14 +9,12 @@ import com.vipulpatil.eCommerce.entity.type.RoleType;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import com.vipulpatil.eCommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,11 +48,11 @@ public class ReviewService {
         return toDto(savedReview);
     }
 
-    public Page<ReviewResponseDto> getReviews(Long productId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-        return reviewRepository.findByProductId(productId, pageable)
-                .map(this::toDto);
+    public List<ReviewResponseDto> getReviews(Long productId) {
+        return reviewRepository.findByProductId(productId)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     public void deleteReview(Long reviewId, User currentUser) {

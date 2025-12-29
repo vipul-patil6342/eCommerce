@@ -1,14 +1,17 @@
 import { Heart, ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProductById } from "../features/product/productThunk";
 import { getWishlist, toggleWishlist } from "../features/wishlist/wishlistThunk";
 import { addToCart } from "../features/cart/cartThunk";
 import { showError, showSuccess } from "../utils/toast";
+import CustomerReviews from "../components/CustomerReviews";
+import { CustomLoading } from "../components/LoadingSkeleton";
 
 const ProductDetails = () => {
     const { items } = useSelector(state => state.cart);
+    const { user } = useSelector(state => state.auth);
     const { wishlistedItems = [] } = useSelector(state => state.wishlist);
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -23,7 +26,7 @@ const ProductDetails = () => {
     const darkMode = theme === "dark";
 
     if (!selectedProduct) {
-        return <div className={`p-6 ${darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>Loading selectedProduct...</div>;
+        return <CustomLoading />
     }
 
     const isAdded = items.some((item) => item.productId === selectedProduct.id);
@@ -149,6 +152,7 @@ const ProductDetails = () => {
                     </div>
                 </div>
             </div>
+            <CustomerReviews productId={selectedProduct.id} currentUserId={user.userId} />
         </div>
     );
 }

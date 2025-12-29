@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { verifyOtp, sendOtp } from '../features/auth/authThunk';
 import { clearSignupData } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { CustomLoading } from '../components/LoadingSkeleton';
 
 export default function OtpPage() {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -18,6 +19,12 @@ export default function OtpPage() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    if (isLoading) {
+        return (
+            <CustomLoading darkMode={darkMode} />
+        );
+    }
 
     const handleChange = (index, value) => {
         if (!/^\d*$/.test(value)) return;
@@ -64,8 +71,8 @@ export default function OtpPage() {
     return (
         <div className={`min-h-[calc(100vh-68px)] overflow-hidden transition-colors duration-300 ${
             darkMode
-                ? 'bg-gradient-to-br from-gray-900 to-gray-800'
-                : 'bg-gradient-to-br from-orange-50 to-amber-100'
+                ? 'bg-linear-to-br from-gray-900 to-gray-800'
+                : 'bg-linear-to-br from-orange-50 to-amber-100'
         }`}>
 
             <div className="flex items-center justify-center h-full p-6">
@@ -126,7 +133,7 @@ export default function OtpPage() {
                             disabled={isLoading}
                             className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-semibold py-3 rounded-lg transition mb-4"
                         >
-                            {isLoading ? 'Verifying...' : 'Verify OTP'}
+                            Verify OTP
                         </button>
 
                         <div className={`flex items-center justify-center text-sm mb-6 ${

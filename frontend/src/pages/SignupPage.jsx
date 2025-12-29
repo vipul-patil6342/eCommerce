@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { sendOtp, signupUser } from '../features/auth/authThunk';
 import { setSignupData, clearSignupData } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { CustomLoading } from '../components/LoadingSkeleton';
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
@@ -21,6 +22,12 @@ export default function SignupPage() {
     const { isLoading, error: authError } = useSelector(state => state.auth);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
+
+    if (isLoading) {
+        return (
+            <CustomLoading darkMode={darkMode} />
+        );
+    }
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -99,6 +106,7 @@ export default function SignupPage() {
         const resultAction = await dispatch(signupUser(userData));
         if (signupUser.fulfilled.match(resultAction)) {
             dispatch(sendOtp({ email: userData.username }));
+            console.log("send otp called")
             navigate("/otp");
         } else {
             dispatch(clearSignupData());
@@ -109,7 +117,7 @@ export default function SignupPage() {
         <div className={`flex-1 transition-colors duration-300 ${darkMode
             ? 'bg-gray-900 text-white'
             : 'bg-white text-gray-900'
-        }`}>
+            }`}>
 
             <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
                 <div className={`flex items-center justify-center p-4 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
@@ -119,7 +127,7 @@ export default function SignupPage() {
                             Create your account to get started
                         </p>
 
-                        <div onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium mb-1">
                                     Full Name
@@ -134,7 +142,7 @@ export default function SignupPage() {
                                     className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
                                         ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
                                         : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
-                                    } focus:outline-none`}
+                                        } focus:outline-none`}
                                 />
                             </div>
 
@@ -152,7 +160,7 @@ export default function SignupPage() {
                                     className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
                                         ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
                                         : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
-                                    } focus:outline-none`}
+                                        } focus:outline-none`}
                                 />
                             </div>
 
@@ -171,7 +179,7 @@ export default function SignupPage() {
                                         className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
                                             ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
                                             : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
-                                        } focus:outline-none`}
+                                            } focus:outline-none`}
                                     />
                                     <button
                                         type='button'
@@ -198,7 +206,7 @@ export default function SignupPage() {
                                         className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
                                             ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
                                             : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
-                                        } focus:outline-none`}
+                                            } focus:outline-none`}
                                     />
                                     <button
                                         type='button'
@@ -218,31 +226,30 @@ export default function SignupPage() {
                             )}
 
                             <button
+                                type='submit'
                                 onClick={handleSubmit}
                                 disabled={isLoading}
                                 className="w-full flex items-center justify-center bg-orange-400 hover:bg-orange-500 disabled:bg-orange-300 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform focus:outline-none cursor-pointer"
                             >
-                                {isLoading ? (
-                                    <span className="flex items-center gap-2">
-                                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                        Creating...
-                                    </span>
-                                ) : (
-                                    "Create Account"
-                                )}
+                                Create Account
                             </button>
-                        </div>
+                        </form>
 
                         <p className={`text-center text-sm mt-6 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             Already have an account?{' '}
-                            <span className="text-orange-400 hover:text-orange-500 font-medium cursor-pointer">
+                            <span className="text-orange-400 hover:text-orange-500 font-medium cursor-pointer" onClick={() => navigate("/login")}>
                                 Sign in
                             </span>
                         </p>
                     </div>
                 </div>
 
-                <div className={`hidden md:flex items-center justify-center p-8 bg-gradient-to-br from-orange-500 to-amber-500`}>
+                <div
+                    className={`hidden md:flex items-center justify-center p-8 ${darkMode
+                        ? 'bg-gray-900'
+                        : 'bg-linear-to-br from-orange-500 to-amber-500'
+                        }`}
+                >
                     <div className="text-center text-white max-w-md">
                         <h2 className="text-5xl font-bold mb-6">Welcome!</h2>
                         <p className="text-xl leading-relaxed mb-8">
