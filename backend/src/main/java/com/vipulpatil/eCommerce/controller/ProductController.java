@@ -6,6 +6,8 @@ import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +40,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
+    @CacheEvict(value = {"products", "product", "productsByCategory"}, allEntries = true)
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestPart("product") ProductRequestDto request, @RequestPart(value = "image", required = false) MultipartFile file) throws IOException {
         ProductResponseDto response = productService.updateProduct(id, request, file);
         return ResponseEntity.ok(response);
@@ -45,6 +48,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
+    @CacheEvict(value = {"products", "product", "productsByCategory"}, allEntries = true)
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws IOException {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product Deleted Successfully");
@@ -52,6 +56,7 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping
+    @Cacheable(value = "products", key = "#page")
     public ResponseEntity<Page<ProductResponseDto>> getAllProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
         Page<ProductResponseDto> products = productService.getAllProducts(pageable);
@@ -60,6 +65,7 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/{id}")
+    @Cacheable(value = "product", key = "#id")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable Long id) {
         ProductResponseDto response = productService.getProductById(id);
         return ResponseEntity.ok(response);
@@ -69,11 +75,12 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<Page<ProductResponseDto>> searchProducts(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
-        return ResponseEntity.ok(productService.searchProducts(q,pageable));
+        return ResponseEntity.ok(productService.searchProducts(q, pageable));
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/category/{category}")
+    @Cacheable(value = "productsByCategory", key = "#category + '::' + #page '::' #sort")
     public ResponseEntity<Page<ProductResponseDto>> getProductsByCategory(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction, @PathVariable String category) {
         Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
         Page<ProductResponseDto> response = productService.getProductsByCategory(category, pageable);
