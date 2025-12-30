@@ -1,8 +1,10 @@
 package com.vipulpatil.eCommerce.service;
 
 import com.vipulpatil.eCommerce.dto.WishlistDto;
+import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.entity.Wishlist;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import com.vipulpatil.eCommerce.repository.UserRepository;
 import com.vipulpatil.eCommerce.repository.WishlistRepository;
@@ -26,7 +28,7 @@ public class WishlistService {
 
     public List<WishlistDto> getUserWishlist(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return wishlistRepository.findAllByUserId(userId)
                 .stream()
@@ -40,20 +42,24 @@ public class WishlistService {
     }
 
     public boolean toggleWishlist(Long userId, Long productId){
-        log.info("Incoming userId = {}", userId);
-        log.info("Incoming productId = {}", productId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+
         Optional<Wishlist> existing = wishlistRepository.findByUserIdAndProductId(userId,productId);
-        log.info("product :{}" , existing);
 
         if(existing.isPresent()){
             wishlistRepository.delete(existing.get());
-            log.info("product deleted");
+            log.debug("Product {} removed from wishlist for user {}", productId, userId);
             return false;
         }
 
         Wishlist wishlist = Wishlist.builder()
-                .user(userRepository.getReferenceById(userId))
-                .product(productRepository.getReferenceById(productId))
+                .user(user)
+                .product(product)
                 .build();
 
         wishlistRepository.save(wishlist);

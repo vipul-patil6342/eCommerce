@@ -1,5 +1,8 @@
 package com.vipulpatil.eCommerce.service;
 
+import com.vipulpatil.eCommerce.entity.User;
+import com.vipulpatil.eCommerce.error.BadRequestException;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.UserRepository;
 import com.vipulpatil.eCommerce.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,51 +22,81 @@ public class OtpService {
     private final UserRepository userRepository;
 
     private static final long OTP_EXPIRY_MINUTES = 5;
+    private static final int MAX_ATTEMPTS = 5;
 
-    public String generateAndSaveOtp(String email){
+    private static final String OTP_KEY_PREFIX = "otp:";
+    private static final String OTP_ATTEMPT_PREFIX = "otp_attempts:";
+
+    public String generateAndSaveOtp(String email) {
         log.info("OTP generation requested for email={}", email);
-        if(email == null || email.isBlank()){
-            throw new IllegalArgumentException("Email cannot be null or blank");
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("Email cannot be null or blank");
         }
         String otp = otpUtil.generateOtp();
-        storeOtpInRedis(email,otp);
-        return otp;
-    }
+        String hashedOtp = otpUtil.hashOtp(otp);
 
-    private void storeOtpInRedis(String email, String otp) {
-        log.debug("Storing OTP in Redis with key=otp:{}", email);
         template.opsForValue().set(
-                "otp:" + email ,
-                otp,
+                OTP_KEY_PREFIX + email,
+                hashedOtp,
                 OTP_EXPIRY_MINUTES,
                 TimeUnit.MINUTES
         );
+
+        template.opsForValue().set(
+                OTP_ATTEMPT_PREFIX + email,
+                "0",
+                OTP_EXPIRY_MINUTES,
+                TimeUnit.MINUTES
+        );
+
+        return otp;
     }
 
-    public boolean verifyOtp(String email , String otp){
-        String storedOtp = template.opsForValue().get("otp:" + email);
+    public boolean verifyOtp(String email, String otp) {
 
-        if(storedOtp == null){
+        if (email == null || email.isBlank() || otp == null || otp.isBlank()) {
             return false;
         }
 
-        if(storedOtp.equals(otp)){
-            template.delete("otp:" + email);
+        String otpKey = OTP_KEY_PREFIX + email;
+        String attemptKey = OTP_ATTEMPT_PREFIX + email;
+
+        String storedHash = template.opsForValue().get(otpKey);
+
+        if (storedHash == null) {
+            return false;
+        }
+
+        String attemptValue = template.opsForValue().get(attemptKey);
+        int attempts = attemptValue != null ? Integer.parseInt(attemptValue) : 0;
+
+        if (attempts >= MAX_ATTEMPTS) {
+            template.delete(otpKey);
+            template.delete(attemptKey);
+            return false;
+        }
+
+        if (otpUtil.matches(otp, storedHash)) {
+            template.delete(otpKey);
+            template.delete(attemptKey);
             return true;
         }
 
+        template.opsForValue().increment(attemptKey);
         return false;
     }
 
-    public boolean verifyOtpAndMarkEmailVerified(String email, String otp){
-        boolean isValid = verifyOtp(email, otp);
+    public boolean verifyOtpAndMarkEmailVerified(String email, String otp) {
 
-        if(!isValid) return false;
+        if (!verifyOtp(email, otp)) {
+            throw new BadRequestException("Invalid or Expired OTP");
+        }
 
-        userRepository.findByUsername(email).ifPresent(user -> {
-            user.setEmailVerified(true);
-            userRepository.save(user);
-        });
+        User user = userRepository.findByUsername(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setEmailVerified(true);
+        userRepository.save(user);
 
         return true;
     }

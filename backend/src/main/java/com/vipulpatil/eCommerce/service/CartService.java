@@ -7,6 +7,8 @@ import com.vipulpatil.eCommerce.entity.Cart;
 import com.vipulpatil.eCommerce.entity.CartItem;
 import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.entity.User;
+import com.vipulpatil.eCommerce.error.BadRequestException;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.CartItemRepository;
 import com.vipulpatil.eCommerce.repository.CartRepository;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
@@ -39,12 +41,17 @@ public class CartService {
     }
 
     public CartDto addToCart(User user, AddToCartRequestDto request) {
+
+        if(request.getQuantity() <= 0){
+            throw new BadRequestException("Quantity must be greater than 0");
+        }
+
         Cart cart = getOrCreateCart(user);
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (product.getStock() < request.getQuantity()) {
-            throw new RuntimeException("Insufficient stock available");
+            throw new BadRequestException("Insufficient stock available");
         }
 
         Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
@@ -77,7 +84,8 @@ public class CartService {
     }
 
     public void clearCart(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         if (cart != null && !cart.getItems().isEmpty()) {
             cart.getItems().clear();
@@ -89,7 +97,7 @@ public class CartService {
     public CartDto removeFromCart(User user, Long productId) {
         Cart cart = getOrCreateCart(user);
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId)
-                .orElseThrow(() -> new RuntimeException("Product not found in cart"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart"));
 
         cart.getItems().remove(item);
         cartItemRepository.delete(item);
@@ -102,7 +110,7 @@ public class CartService {
         Cart cart = getOrCreateCart(user);
 
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId)
-                .orElseThrow(() -> new RuntimeException("Product not found in cart"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart"));
 
         if (quantity <= 0) {
             return removeFromCart(user, productId);
@@ -111,7 +119,7 @@ public class CartService {
         Product product = item.getProduct();
 
         if (product.getStock() < quantity) {
-            throw new RuntimeException("Insufficient stock");
+            throw new BadRequestException("Insufficient stock");
         }
 
         item.setQuantity(quantity);

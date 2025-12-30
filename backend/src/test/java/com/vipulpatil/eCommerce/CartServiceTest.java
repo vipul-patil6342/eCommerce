@@ -2,10 +2,8 @@ package com.vipulpatil.eCommerce;
 
 import com.vipulpatil.eCommerce.dto.AddToCartRequestDto;
 import com.vipulpatil.eCommerce.dto.CartDto;
-import com.vipulpatil.eCommerce.entity.Cart;
 import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.entity.User;
-import com.vipulpatil.eCommerce.repository.CartRepository;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import com.vipulpatil.eCommerce.repository.UserRepository;
 import com.vipulpatil.eCommerce.service.CartService;
@@ -86,7 +84,5 @@ public class CartServiceTest {
         CartDto cart = cartService.getCart(user);
         assertEquals(0, cart.getItems().size());
     }
-
-
 
 }

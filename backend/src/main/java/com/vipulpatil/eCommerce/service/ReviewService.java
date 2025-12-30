@@ -6,6 +6,8 @@ import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.entity.Review;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.entity.type.RoleType;
+import com.vipulpatil.eCommerce.error.BadRequestException;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import com.vipulpatil.eCommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,16 @@ public class ReviewService {
     private final ProductRepository productRepository;
 
     public ReviewResponseDto addReview(Long productId, User user, ReviewRequestDto request) {
+
+        validateRating(request.getRating());
+
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
 
         Optional<Review> existingReview = reviewRepository.findByUserIdAndProductId(user.getId(), productId);
         if (existingReview.isPresent()) {
-            throw new RuntimeException("You have already reviewed this product");
+            throw new BadRequestException("You have already reviewed this product");
         }
 
         Review review = Review.builder()
@@ -49,6 +54,10 @@ public class ReviewService {
     }
 
     public List<ReviewResponseDto> getReviews(Long productId) {
+
+        if(!productRepository.existsById(productId)){
+            throw new ResourceNotFoundException("Product not found");
+        }
         return reviewRepository.findByProductId(productId)
                 .stream()
                 .map(this::toDto)
@@ -56,13 +65,15 @@ public class ReviewService {
     }
 
     public void deleteReview(Long reviewId, User currentUser) {
+
         Review review;
+
         if (currentUser.getRoles().contains(RoleType.ADMIN)) {
             review = reviewRepository.findById(reviewId)
-                    .orElseThrow(() -> new RuntimeException("Review not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
         } else {
             review = reviewRepository.findByIdAndUserId(reviewId,currentUser.getId())
-                    .orElseThrow(() -> new RuntimeException("Unauthorized or review not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Unauthorized or review not found"));
         }
 
         Long productId = review.getProduct().getId();
@@ -72,7 +83,7 @@ public class ReviewService {
 
     public ReviewResponseDto updateReview(Long reviewId , User currentUser, ReviewRequestDto request){
         Review review = reviewRepository.findByIdAndUserId(reviewId, currentUser.getId())
-                .orElseThrow(() -> new RuntimeException("Unauthorized or review not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Unauthorized or review not found"));
 
         review.setRating(request.getRating());
         review.setComment(request.getComment());
@@ -86,7 +97,7 @@ public class ReviewService {
 
     private void updateProductRating(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         Double averageRating = reviewRepository.getAverageRatingByProductId(productId);
         Long reviewCount = reviewRepository.countByProductId(productId);
@@ -95,6 +106,12 @@ public class ReviewService {
         product.setReviewCount(reviewCount.intValue());
 
         productRepository.save(product);
+    }
+
+    private void validateRating(Integer rating){
+        if(rating == null || rating < 1 || rating > 5){
+            throw new BadRequestException("Rating must be between 1 and 5");
+        }
     }
 
     private ReviewResponseDto toDto(Review review) {

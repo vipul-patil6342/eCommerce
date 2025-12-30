@@ -125,7 +125,7 @@ const ProductDetails = () => {
                                             ? "bg-gray-400 cursor-not-allowed"
                                             : isAdded
                                                 ? "bg-green-600 hover:bg-green-700"
-                                                : "bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-orange-500/50"
+                                                : "bg-orange-500 hover:bg-orange-600"
                                         }`}
                                 >
                                     <ShoppingCart size={18} />

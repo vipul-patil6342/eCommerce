@@ -20,6 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             WHERE LOWER(p.name) LIKE %:q%
             OR LOWER(p.category) LIKE %:q%
             OR LOWER(p.description) LIKE %:q%
+            OR LOWER(p.brand) LIKE %:q%
             """)
     Page<ProductResponseDto> search(@Param("q") String q, Pageable pageable);
 

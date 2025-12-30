@@ -3,10 +3,13 @@ package com.vipulpatil.eCommerce.service;
 import com.vipulpatil.eCommerce.dto.ProductRequestDto;
 import com.vipulpatil.eCommerce.dto.ProductResponseDto;
 import com.vipulpatil.eCommerce.entity.Product;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,9 +53,10 @@ public class ProductService {
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
+    @CacheEvict(value = {"product"}, allEntries = true)
     public ProductResponseDto updateProduct(Long id, ProductRequestDto request, MultipartFile file) throws IOException {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found"));
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
@@ -77,9 +81,10 @@ public class ProductService {
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
+    @CacheEvict(value = {"product"}, allEntries = true)
     public void deleteProduct(Long id) throws IOException {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (product.getPublicId() != null && !product.getPublicId().isBlank()) {
             cloudinaryService.deleteImage(product.getPublicId());
@@ -92,15 +97,16 @@ public class ProductService {
                 .map(product -> modelMapper.map(product, ProductResponseDto.class));
     }
 
+    @Cacheable(value = "product", key = "#id")
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found"));
 
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
 
-    public @Nullable Page<ProductResponseDto> searchProducts(String q, Pageable pageable) {
+    public Page<ProductResponseDto> searchProducts(String q, Pageable pageable) {
         return productRepository.search(q.toLowerCase(), pageable);
     }
 

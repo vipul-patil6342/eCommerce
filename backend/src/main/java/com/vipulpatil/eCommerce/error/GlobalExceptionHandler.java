@@ -1,5 +1,6 @@
 package com.vipulpatil.eCommerce.error;
 
+import com.cloudinary.Api;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         return buildError(
                 HttpStatus.NOT_FOUND,
-                "Username not found: " + ex.getMessage()
+                "Username not found"
         );
     }
 
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException ex) {
         return buildError(
                 HttpStatus.UNAUTHORIZED,
-                "Authentication failed: " + ex.getMessage()
+                "Invalid Username or Password"
         );
     }
 
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleJwtException(JwtException ex) {
         return buildError(
                 HttpStatus.UNAUTHORIZED,
-                "Invalid JWT token: " + ex.getMessage()
+                "Invalid or expired token"
         );
     }
 
@@ -53,12 +54,32 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleResourceNotFound(ResourceNotFoundException ex){
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiError> handleBadRequestFound(BadRequestException ex){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+    }
+
     // Generic fallback
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception ex) {
+        ex.printStackTrace();
+
         return buildError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred: " + ex.getMessage()
+                "Something went wrong. Please try again later."
         );
     }
+
+
 }

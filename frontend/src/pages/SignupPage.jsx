@@ -218,8 +218,7 @@ export default function SignupPage() {
                                 </div>
                             </div>
 
-                            {/* Error Message Div */}
-                            {error || authError && (
+                            {(error || authError) && (
                                 <div className="p-3 text-center">
                                     <p className="text-red-500 text-sm font-medium">{error || authError}</p>
                                 </div>

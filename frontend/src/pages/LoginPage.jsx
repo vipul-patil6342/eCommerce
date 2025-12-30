@@ -154,7 +154,6 @@ export default function LoginPage() {
                                 </div>
                             </div>
 
-                            {/* Error Message Div */}
                             {(error || authError) && (
                                 <div className="p-3 text-center">
                                     <p className="text-red-500 text-sm font-medium">{error || authError}</p>

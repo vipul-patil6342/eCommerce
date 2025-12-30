@@ -4,6 +4,7 @@ import com.vipulpatil.eCommerce.dto.AddressRequestDto;
 import com.vipulpatil.eCommerce.dto.AddressResponseDto;
 import com.vipulpatil.eCommerce.entity.Address;
 import com.vipulpatil.eCommerce.entity.User;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.AddressRepository;
 import com.vipulpatil.eCommerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -25,7 +26,7 @@ public class AddressService {
 
     public AddressResponseDto createAddress(Long userId, AddressRequestDto request){
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if(request.isDefaultAddress()){
             addressRepository.findByUserIdAndDefaultAddressTrue(userId)
@@ -70,7 +71,7 @@ public class AddressService {
 
     public AddressResponseDto updateAddress(Long addressId, Long userId, AddressRequestDto request) {
         Address address = addressRepository.findByIdAndUserId(addressId, userId)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
         if(request.isDefaultAddress() && !address.isDefaultAddress()){
             addressRepository.findByUserIdAndDefaultAddressTrue(userId)
@@ -94,21 +95,21 @@ public class AddressService {
 
     public AddressResponseDto getAddressById(Long addressId, Long userId) {
         Address address = addressRepository.findByIdAndUserId(addressId, userId)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
         return modelMapper.map(address, AddressResponseDto.class);
     }
 
     public AddressResponseDto getDefaultAddress(Long userId) {
         Address address = addressRepository.findByUserIdAndDefaultAddressTrue(userId)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
         return modelMapper.map(address , AddressResponseDto.class);
     }
 
     public AddressResponseDto setDefaultAddress(Long addressId, Long userId) {
         Address address = addressRepository.findByIdAndUserId(addressId, userId)
-                .orElseThrow(() -> new RuntimeException("Address Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address Not Found"));
 
         addressRepository.findByUserIdAndDefaultAddressTrue(userId)
                         .ifPresent(addr -> {

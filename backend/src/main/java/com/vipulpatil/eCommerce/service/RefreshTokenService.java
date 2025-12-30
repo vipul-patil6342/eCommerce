@@ -2,6 +2,7 @@ package com.vipulpatil.eCommerce.service;
 
 import com.vipulpatil.eCommerce.entity.RefreshToken;
 import com.vipulpatil.eCommerce.entity.User;
+import com.vipulpatil.eCommerce.error.BadRequestException;
 import com.vipulpatil.eCommerce.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken createRefreshToken(User user) {
         if (user == null || user.getId() == null) {
-            throw new IllegalArgumentException("User cannot be null");
+            throw new BadRequestException("User cannot be null");
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
@@ -44,19 +45,19 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken verifyRefreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new IllegalArgumentException("Refresh token cannot be null or empty");
+            throw new BadRequestException("Refresh token cannot be null or empty");
         }
 
         RefreshToken token = refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> {
                     log.warn("Invalid refresh token attempt");
-                    return new RuntimeException("Invalid refresh token");
+                    return new BadRequestException("Invalid refresh token");
                 });
 
         if (token.getExpiry().isBefore(Instant.now())) {
             log.warn("Refresh token expired for user: {}", token.getUser().getId());
             deleteRefreshToken(token);
-            throw new RuntimeException("Refresh token expired");
+            throw new BadRequestException("Refresh token expired");
         }
 
         return token;
@@ -71,7 +72,7 @@ public class RefreshTokenService {
     @Transactional
     public void deleteRefreshTokenByUser(User user) {
         if (user == null || user.getId() == null) {
-            throw new IllegalArgumentException("User cannot be null");
+            throw new BadRequestException("User cannot be null");
         }
 
         refreshTokenRepository.deleteByUser(user);
