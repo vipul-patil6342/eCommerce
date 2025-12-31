@@ -5,33 +5,56 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    private final JavaMailSender mailSender;
-
     @Value("${smtp.from-email}")
     private String fromEmail;
+
+    @Value("${brevo.api-key}")
+    private String apiKey;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     @Async
     public void sendSimpleEmail(String to, String subject, String body) {
 
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(to.trim());
-            message.setSubject(subject);
-            message.setText(body);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key",apiKey);
 
-            mailSender.send(message);
-        } catch (MatchException ex) {
+            String payload = """
+            {
+              "sender": { "email": "%s", "name": "Bazaar" },
+              "to": [{ "email": "%s" }],
+              "subject": "%s",
+              "htmlContent": "%s"
+            }
+            """.formatted(fromEmail, to, subject, body.replace("\n", "<br>"));
+
+            HttpEntity<String> request = new HttpEntity<>(payload,headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    "https://api.brevo.com/v3/smtp/email",
+                    request,
+                    String.class
+            );
+
+            if(!response.getStatusCode().is2xxSuccessful()){
+                throw new RuntimeException("Email API failed: " + response.getBody());
+            }
+        } catch (Exception ex) {
             throw new RuntimeException("Failed to send email. Please try again later.");
         }
     }
