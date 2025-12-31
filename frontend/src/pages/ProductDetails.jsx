@@ -16,7 +16,7 @@ const ProductDetails = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
 
-    const { selectedProduct } = useSelector(state => state.products);
+    const { selectedProduct, loading } = useSelector(state => state.products);
     const { theme } = useSelector(state => state.theme);
 
     useEffect(() => {
@@ -61,6 +61,9 @@ const ProductDetails = () => {
     return (
         <div className={`${darkMode ? "bg-gray-900" : "bg-white"}`}>
             <div className="min-h-screen py-8 px-4 sm:px-6">
+                
+                {loading && <CustomLoading darkMode={darkMode} />}
+
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 

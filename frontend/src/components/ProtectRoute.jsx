@@ -7,21 +7,23 @@ const ProtectRoute = ({ role }) => {
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
-    if (isLoading) {
-        return (
-            <CustomLoading darkMode={darkMode} />
-        );
-    }
+    return (
+        <>
+            {/* Overlay loader instead of early return */}
+            {isLoading && <CustomLoading darkMode={darkMode} />}
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
-    }
+            {!isAuthenticated && !isLoading && (
+                <Navigate to="/login" replace />
+            )}
 
-    if (role && !user?.roles?.includes(role)) {
-        return <Navigate to="/products" replace />;
-    }
+            {isAuthenticated && role && !user?.roles?.includes(role) && (
+                <Navigate to="/products" replace />
+            )}
 
-    return <Outlet />;
+            {/* Keep routes mounted */}
+            {isAuthenticated && <Outlet />}
+        </>
+    );
 };
 
 export default ProtectRoute;

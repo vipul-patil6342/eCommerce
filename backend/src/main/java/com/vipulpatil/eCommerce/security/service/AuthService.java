@@ -5,6 +5,7 @@ import com.vipulpatil.eCommerce.entity.RefreshToken;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.entity.type.AuthProviderType;
 import com.vipulpatil.eCommerce.entity.type.RoleType;
+import com.vipulpatil.eCommerce.error.BadRequestException;
 import com.vipulpatil.eCommerce.repository.UserRepository;
 import com.vipulpatil.eCommerce.security.AuthUtil;
 import com.vipulpatil.eCommerce.service.RefreshTokenService;
@@ -134,7 +135,7 @@ public class AuthService {
         if (existing != null) {
             if(existing.isEmailVerified()){
                 log.warn("Signup attempt with existing username: {}", request.getUsername());
-                throw new IllegalArgumentException("Username already exists");
+                throw new BadRequestException("Username already exists");
             }
 
             return existing;
@@ -158,12 +159,7 @@ public class AuthService {
         return savedUser;
     }
 
-    /**
-     * Public signup endpoint for email-based registration.
-     *
-     * @param request Signup request
-     * @return SignupResponseDto with user ID and username
-     */
+
     @Transactional
     public SignupResponseDto signup(SignupRequestDto request) {
         User user = signupInternal(request, AuthProviderType.EMAIL, null);

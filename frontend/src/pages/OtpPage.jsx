@@ -20,12 +20,6 @@ export default function OtpPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    if (isLoading) {
-        return (
-            <CustomLoading darkMode={darkMode} />
-        );
-    }
-
     const handleChange = (index, value) => {
         if (!/^\d*$/.test(value)) return;
 
@@ -76,6 +70,9 @@ export default function OtpPage() {
         }`}>
 
             <div className="flex items-center justify-center h-full p-6">
+                
+                {isLoading && <CustomLoading darkMode={darkMode} />}
+
                 <div className="w-full max-w-md">
                     <div className={`rounded-2xl shadow-2xl p-8 transition-colors duration-300 ${
                         darkMode ? 'bg-gray-800' : 'bg-white'

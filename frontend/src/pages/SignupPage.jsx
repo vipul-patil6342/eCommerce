@@ -23,12 +23,6 @@ export default function SignupPage() {
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
-    if (isLoading) {
-        return (
-            <CustomLoading darkMode={darkMode} />
-        );
-    }
-
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setError(''); // Clear error when user starts typing
@@ -119,7 +113,10 @@ export default function SignupPage() {
             : 'bg-white text-gray-900'
             }`}>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
+            <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+
+                {isLoading && <CustomLoading darkMode={darkMode} />}
+
                 <div className={`flex items-center justify-center p-4 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                     <div className="w-full max-w-md">
                         <h1 className="text-2xl font-bold mb-1">Join Us</h1>

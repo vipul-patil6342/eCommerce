@@ -1,19 +1,12 @@
-const CustomLoading = ({ darkMode }) => {
-    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-white'
-        }`}>
-        <div className="flex flex-col items-center gap-4">
-            {/* Spinner */}
-            <div className="relative w-16 h-16">
-                <div className="absolute inset-0 border-4 border-transparent border-t-orange-500 rounded-full animate-spin"></div>
-            </div>
-            {/* Loading Text */}
-            <p className={`text-lg font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                Loading...
-            </p>
-        </div>
+const CustomLoading = ({ darkMode }) => (
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div
+            className={`h-10 w-10 animate-spin rounded-full border-4 
+        ${darkMode ? "border-white" : "border-black"} border-t-transparent`}
+        />
     </div>
-}
+);
+
 
 const LoadingSkeleton = ({ darkMode }) => {
     return (
