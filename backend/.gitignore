@@ -22,7 +22,6 @@ application-*.yml
 .env
 .env.*
 
-!src/main/resources/application-prod.yml
 !application-prod.properties
 
 # -------------------------
