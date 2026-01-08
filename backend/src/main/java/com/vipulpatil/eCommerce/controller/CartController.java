@@ -4,6 +4,7 @@ import com.vipulpatil.eCommerce.dto.AddToCartRequestDto;
 import com.vipulpatil.eCommerce.dto.CartDto;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.service.CartService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class CartController {
 
     @PostMapping("/add")
     public ResponseEntity<CartDto> addToCart(
-            @RequestBody AddToCartRequestDto request,
+            @Valid  @RequestBody AddToCartRequestDto request,
             @AuthenticationPrincipal User user
     ) {
         CartDto cartDto = cartService.addToCart(user, request);

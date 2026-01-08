@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendOtp, signupUser } from '../features/auth/authThunk';
-import { setSignupData, clearSignupData } from '../features/auth/authSlice';
+import { setSignupData, clearSignupData, resetError } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { CustomLoading } from '../components/LoadingSkeleton';
 
@@ -22,6 +22,10 @@ export default function SignupPage() {
     const { isLoading, error: authError } = useSelector(state => state.auth);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
+
+    useEffect(() => {
+        dispatch(resetError());
+    }, [dispatch]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

@@ -51,6 +51,9 @@ export default function OtpPage() {
         if (verifyOtp.fulfilled.match(resultAction)) {
             dispatch(clearSignupData());
             navigate("/login");
+            setTimeout(() => {
+                alert("Signup successful. Login to continue.");
+            }, 1000);
         }
     };
 

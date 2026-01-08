@@ -32,7 +32,10 @@ public class Address {
     @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
     private String house;
+
+    @Column(nullable = false)
     private String street;
 
     @Column(nullable = false)

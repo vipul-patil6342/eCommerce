@@ -5,6 +5,7 @@ import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { CustomLoading } from '../components/LoadingSkeleton';
+import { resetError } from '../features/auth/authSlice';
 
 export default function LoginPage() {
     const { isAuthenticated, isLoading, error: authError } = useSelector(state => state.auth);
@@ -26,6 +27,10 @@ export default function LoginPage() {
             navigate("/products");
         }
     }, [isAuthenticated, navigate]);
+
+    useEffect(() => {
+            dispatch(resetError());
+        }, [dispatch]);
 
     if (isLoading) {
         return (

@@ -8,6 +8,7 @@ import com.vipulpatil.eCommerce.service.RefreshTokenService;
 import com.vipulpatil.eCommerce.utils.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
-            @RequestBody LoginRequestDto loginRequestDto,
+            @Valid  @RequestBody LoginRequestDto loginRequestDto,
             HttpServletResponse response) {
 
         LoginResponseDto loginResponse = authService.login(loginRequestDto);
@@ -47,7 +48,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(
-            @RequestBody SignupRequestDto signupRequestDto) {
+            @Valid @RequestBody SignupRequestDto signupRequestDto
+    ) {
 
         SignupResponseDto signupResponse = authService.signup(signupRequestDto);
         log.info("User signup successful: {}", signupRequestDto.getUsername());

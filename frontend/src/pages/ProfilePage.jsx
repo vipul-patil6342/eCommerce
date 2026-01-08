@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, MapPin, User } from 'lucide-react';
+import { Heart, ShoppingBag, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import Wishlist from '../components/Wishlist';
 import UserProfile from '../components/UserProfile';
@@ -17,8 +17,7 @@ const ProfilePage = () => {
     ];
 
     return (
-        <div className={`min-h-screen flex flex-col md:flex-row ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-50'}`}>
-            {/* Sidebar - Horizontal on mobile, Vertical on md+ */}
+        <div className={`min-h-screen flex flex-col md:flex-row ${darkMode ? 'bg-gray-900' : 'bg-linear-to-br from-gray-50 via-white to-gray-50'}`}>
             <aside className={`w-full md:w-64 md:h-screen md:border-r border-b md:border-b-0 flex md:flex-col ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-3 md:p-6`}>
                 <h3 className="hidden md:block text-sm font-bold text-gray-500 uppercase mb-6">Menu</h3>
 

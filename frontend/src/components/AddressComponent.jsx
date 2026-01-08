@@ -8,6 +8,7 @@ import { showSuccess } from '../utils/toast';
 
 const AddressComponent = () => {
     const [showAddAddress, setShowAddAddress] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const [addressData, setAddressData] = useState({
         house: "",
@@ -38,9 +39,45 @@ const AddressComponent = () => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+        // Clear error for this field when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ""
+            }));
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!addressData.house.trim()) newErrors.house = "House/Building is required";
+        if (!addressData.street.trim()) newErrors.street = "Street is required";
+        if (!addressData.city.trim()) newErrors.city = "City is required";
+        if (!addressData.state.trim()) newErrors.state = "State is required";
+        if (!addressData.country.trim()) newErrors.country = "Country is required";
+        if (!addressData.pincode.trim()) newErrors.pincode = "Pincode is required";
+        if (!addressData.phone.trim()) newErrors.phone = "Phone number is required";
+        
+        // Validate phone format (basic validation for 10 digits)
+        if (addressData.phone.trim() && !/^\d{10}$/.test(addressData.phone.replace(/\D/g, ''))) {
+            newErrors.phone = "Phone number must be valid (10 digits)";
+        }
+
+        // Validate pincode format (basic validation)
+        if (addressData.pincode.trim() && !/^\d{4,6}$/.test(addressData.pincode)) {
+            newErrors.pincode = "Pincode must be 4-6 digits";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
         const resultAction = await dispatch(createAddress(addressData));
         if (createAddress.fulfilled.match(resultAction)) {
             showSuccess("Address created");
@@ -55,6 +92,7 @@ const AddressComponent = () => {
                 defaultAddress: false
             });
             setShowAddAddress(false);
+            setErrors({});
         }
     }
 
@@ -64,7 +102,10 @@ const AddressComponent = () => {
                 <div className="flex justify-between items-center mb-6">
                     <h2 className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Saved Addresses</h2>
                     <button
-                        onClick={() => setShowAddAddress(!showAddAddress)}
+                        onClick={() => {
+                            setShowAddAddress(!showAddAddress);
+                            setErrors({});
+                        }}
                         title='Add Address'
                         className="px-4 py-2 cursor-pointer flex bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold transition"
                     >
@@ -86,8 +127,9 @@ const AddressComponent = () => {
                                         value={addressData.house}
                                         onChange={handleInputChange}
                                         placeholder="Enter house/building number"
-                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.house ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                     />
+                                    {errors.house && <p className="text-red-500 text-sm mt-1">{errors.house}</p>}
                                 </div>
                                 <div>
                                     <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Street</label>
@@ -97,8 +139,9 @@ const AddressComponent = () => {
                                         value={addressData.street}
                                         onChange={handleInputChange}
                                         placeholder="Enter street name"
-                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.street ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                     />
+                                    {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
                                 </div>
                             </div>
 
@@ -111,8 +154,9 @@ const AddressComponent = () => {
                                         value={addressData.city}
                                         onChange={handleInputChange}
                                         placeholder="Enter city"
-                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.city ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                     />
+                                    {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
                                 </div>
                                 <div>
                                     <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>State</label>
@@ -122,8 +166,9 @@ const AddressComponent = () => {
                                         value={addressData.state}
                                         onChange={handleInputChange}
                                         placeholder="Enter state"
-                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.state ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                     />
+                                    {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
                                 </div>
                             </div>
 
@@ -136,8 +181,9 @@ const AddressComponent = () => {
                                         value={addressData.country}
                                         onChange={handleInputChange}
                                         placeholder="Enter country"
-                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.country ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                     />
+                                    {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country}</p>}
                                 </div>
                                 <div>
                                     <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Pincode</label>
@@ -147,8 +193,9 @@ const AddressComponent = () => {
                                         value={addressData.pincode}
                                         onChange={handleInputChange}
                                         placeholder="Enter pincode"
-                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.pincode ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                     />
+                                    {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode}</p>}
                                 </div>
                             </div>
 
@@ -160,8 +207,9 @@ const AddressComponent = () => {
                                     value={addressData.phone}
                                     onChange={handleInputChange}
                                     placeholder="Enter phone number"
-                                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
+                                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.phone ? 'border-red-500' : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'}`}
                                 />
+                                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                             </div>
 
                             <div className="flex items-center gap-3 pt-2">
@@ -185,7 +233,10 @@ const AddressComponent = () => {
                                     Add Address
                                 </button>
                                 <button
-                                    onClick={() => setShowAddAddress(false)}
+                                    onClick={() => {
+                                        setShowAddAddress(false);
+                                        setErrors({});
+                                    }}
                                     className={`px-6 py-2 rounded-lg font-semibold transition ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
                                 >
                                     Cancel

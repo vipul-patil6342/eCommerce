@@ -3,6 +3,7 @@ package com.vipulpatil.eCommerce.controller;
 import com.vipulpatil.eCommerce.dto.ProductRequestDto;
 import com.vipulpatil.eCommerce.dto.ProductResponseDto;
 import com.vipulpatil.eCommerce.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,7 +30,10 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestPart("product") ProductRequestDto request, @RequestPart("image") MultipartFile file) throws IOException {
+    public ResponseEntity<ProductResponseDto> addProduct(
+            @Valid  @RequestPart("product") ProductRequestDto request,
+            @RequestPart("image") MultipartFile file
+    ) throws IOException {
         log.info("Product: {}", request);
         log.info("Image content type: {}", file.getContentType());
 
@@ -39,7 +43,11 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestPart("product") ProductRequestDto request, @RequestPart(value = "image", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<ProductResponseDto> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestPart("product") ProductRequestDto request,
+            @RequestPart(value = "image", required = false) MultipartFile file
+    ) throws IOException {
         ProductResponseDto response = productService.updateProduct(id, request, file);
         return ResponseEntity.ok(response);
     }

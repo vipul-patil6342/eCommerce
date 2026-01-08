@@ -4,6 +4,7 @@ import com.vipulpatil.eCommerce.dto.OtpRequestDto;
 import com.vipulpatil.eCommerce.dto.OtpVerifyRequestDto;
 import com.vipulpatil.eCommerce.service.EmailService;
 import com.vipulpatil.eCommerce.service.OtpService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class OtpController {
     private final EmailService emailService;
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendOtp(@RequestBody OtpRequestDto request){
+    public ResponseEntity<String> sendOtp(@Valid  @RequestBody OtpRequestDto request){
         try{
             String otp = otpService.generateAndSaveOtp(request.getEmail());
 
@@ -34,7 +35,7 @@ public class OtpController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyOtp(@RequestBody OtpVerifyRequestDto request){
+    public ResponseEntity<String> verifyOtp(@Valid @RequestBody OtpVerifyRequestDto request){
             boolean isValid = otpService.verifyOtpAndMarkEmailVerified(request.getEmail(), request.getOtp());
 
             if(isValid){

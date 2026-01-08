@@ -17,6 +17,8 @@ import Wishlist from './components/Wishlist'
 import OtpPage from './pages/OtpPage'
 import ProductDetails from './pages/ProductDetails'
 import ProfilePage from './pages/ProfilePage'
+import PaymentSuccess from './components/PaymentSuccess'
+import PaymentCancel from './components/PaymentCancel'
 
 function App() {
 
@@ -42,6 +44,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/otp" element={<OtpPage />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
 
         <Route path="/" element={<HeroSection />} />
 
@@ -51,6 +55,8 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/profile" element={<ProfilePage />} />
+
+
         </Route>
 
         <Route element={<ProtectRoute role="ADMIN" />}>

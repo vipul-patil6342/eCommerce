@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { Trash2, ShoppingCart , MapPin} from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, getCart, removeItem, updateQuantity } from '../features/cart/cartThunk';
 import { useNavigate } from 'react-router-dom';
 import { CartSkeleton } from './LoadingSkeleton';
 import { showError, showSuccess } from '../utils/toast';
 import ConfirmModal from './ConfirmModel';
+import { checkoutPayment } from '../features/payment/paymentThunk';
+import { selectAllAddresses } from '../features/address/addressSlice';
 
 const Cart = () => {
 
@@ -13,9 +15,13 @@ const Cart = () => {
     const [editingId, setEditingId] = useState(null);
     const [editValue, setEditValue] = useState('');
 
+    const { loading: paymentLoading, error: paymentError } = useSelector(state => state.payment);
+
     const { items, totalPrice, loading, error } = useSelector(state => state.cart);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
+
+    const addresses = useSelector(selectAllAddresses);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -65,14 +71,14 @@ const Cart = () => {
             return;
         }
 
-        if(newQuantity > item.stock){
+        if (newQuantity > item.stock) {
             showError(`Only ${item.stock} items available in stock`);
             setEditingId(null);
             return;
         }
 
         if (newQuantity !== currentQuantity) {
-            const resultAction = await dispatch(updateQuantity({ productId, quantity : newQuantity }));
+            const resultAction = await dispatch(updateQuantity({ productId, quantity: newQuantity }));
             if (updateQuantity.fulfilled.match(resultAction)) {
                 showSuccess(`Quantity updated to ${newQuantity}`);
             } else {
@@ -90,6 +96,21 @@ const Cart = () => {
             setEditingId(null);
         }
     }
+    const defaultAddress = addresses?.[0];
+
+    const handleCheckout = async () => {
+
+        if(!defaultAddress){
+            showError("Please select delivery address");
+            return;
+        }
+        try {
+            await dispatch(checkoutPayment({addressId : defaultAddress.id})).unwrap();
+        } catch (error) {
+            showError(error)
+        }
+    }
+
 
     return (
         <div className={`min-h-screen overflow-y-scroll p-4 sm:p-6 transition-colors duration-300
@@ -100,8 +121,8 @@ const Cart = () => {
         >
             <div className="max-w-5xl mx-auto">
 
-                <div className="flex justify-between">
-                    <div className="flex items-center gap-3 mb-8">
+                <div className="flex justify-between mb-8">
+                    <div className="flex items-center gap-3">
                         <ShoppingCart className={`w-8 h-8 ${darkMode ? 'text-orange-400' : 'text-orange-500'}`} />
                         <h1 className={`text-3xl font-bold ${darkMode ? 'text-gray-100' : 'text-slate-900'}`}>
                             Your Cart
@@ -210,7 +231,63 @@ const Cart = () => {
                         )}
                     </div>
 
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 space-y-4">
+                        <div className={`rounded-xl p-6 border shadow-md transition
+                            ${darkMode
+                                ? 'bg-gray-900 border-gray-800'
+                                : 'bg-white border-slate-200'
+                            }`}
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className={`text-lg font-bold flex items-center gap-2
+                                    ${darkMode ? 'text-gray-100' : 'text-slate-900'}`}
+                                >
+                                    <MapPin className="w-5 h-5" />
+                                    Delivery Address
+                                </h2>
+                            </div>
+
+                            {defaultAddress ? (
+                                <>
+                                    <div className={`p-4 rounded-lg border mb-4 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-orange-50 border-orange-200'}`}>
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div className="flex-1">
+                                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-slate-600'}`}>
+                                                    {defaultAddress.phone}
+                                                </p>
+                                            </div>
+                                            <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">
+                                                Default
+                                            </span>
+                                        </div>
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-slate-600'}`}>
+                                            {defaultAddress.house}, {defaultAddress.street}, {defaultAddress.city}, {defaultAddress.state} {defaultAddress.pincode}, {defaultAddress.country}
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => navigate('/profile')}
+                                        className="w-full text-orange-600 hover:text-orange-700 font-semibold py-2 text-sm"
+                                    >
+                                        Manage Addresses
+                                    </button>
+                                </>
+                            ) : (
+                                <div className={`text-center py-8 border-2 border-dashed rounded-lg ${darkMode ? 'border-gray-700' : 'border-slate-300'}`}>
+                                    <p className={`text-sm mb-4 ${darkMode ? 'text-gray-400' : 'text-slate-600'}`}>
+                                        No default address set
+                                    </p>
+                                    <button
+                                        onClick={() => navigate('/profile')}
+                                        className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg text-sm transition"
+                                    >
+                                        Add Default Address
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Order Summary */}
                         <div className={`rounded-xl p-6 sticky top-6 border shadow-md transition
                             ${darkMode
                                 ? 'bg-gray-900 border-gray-800'
@@ -248,8 +325,16 @@ const Cart = () => {
                                 </span>
                             </div>
 
-                            <button className="w-full bg-orange-600 cursor-pointer text-white font-bold py-3 rounded-lg transition">
-                                Checkout
+                            <button
+                                className={`w-full font-bold py-3 rounded-lg transition text-white
+                                    ${paymentLoading || items.length === 0 || !defaultAddress
+                                        ? 'bg-gray-500 cursor-not-allowed'
+                                        : 'bg-orange-600 hover:bg-orange-700 cursor-pointer'
+                                    }`}
+                                disabled={paymentLoading || items.length === 0}
+                                onClick={handleCheckout}
+                            >
+                                {paymentLoading ? "Redirecting to Payment..." : "Checkout"}
                             </button>
 
                             <button
@@ -263,8 +348,9 @@ const Cart = () => {
 
                 </div>
             </div>
-        </div >
+        </div>
     );
+
 };
 
 export default Cart;

@@ -4,6 +4,7 @@ import com.vipulpatil.eCommerce.dto.AddressRequestDto;
 import com.vipulpatil.eCommerce.dto.AddressResponseDto;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.service.AddressService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class AddressController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping
     public ResponseEntity<AddressResponseDto> createAddress(
-            @RequestBody AddressRequestDto request,
+            @Valid @RequestBody AddressRequestDto request,
             @AuthenticationPrincipal User user
     ) {
         AddressResponseDto address =

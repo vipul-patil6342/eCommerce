@@ -39,7 +39,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/oauth2/",
             "/send-email",
             "/otp/send",
-            "/otp/verify"
+            "/otp/verify",
+            "/payments/webhook"
     );
 
     @Override
