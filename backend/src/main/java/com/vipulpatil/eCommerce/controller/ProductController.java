@@ -61,7 +61,11 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDto>> getAllProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+    public ResponseEntity<Page<ProductResponseDto>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "price") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction
+    ) {
         Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
         Page<ProductResponseDto> products = productService.getAllProducts(pageable);
         return ResponseEntity.ok(products);

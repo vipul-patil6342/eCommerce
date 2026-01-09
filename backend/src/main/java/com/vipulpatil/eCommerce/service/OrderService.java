@@ -11,6 +11,8 @@ import com.vipulpatil.eCommerce.repository.AddressRepository;
 import com.vipulpatil.eCommerce.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -71,11 +73,19 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<OrderResponseDto> getPaidOrders(User user) {
-        return orderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(user.getId(), OrderStatus.PAID)
-                .stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+    public Page<OrderResponseDto> getMyOrders(User user, Pageable pageable) {
+        Page<Order> orderPage = orderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(
+                user.getId(),
+                OrderStatus.PAID,
+                pageable
+        );
+
+        return orderPage.map(this::mapToDto);
+    }
+
+    public Page<OrderResponseDto> getAllOrders(Pageable pageable){
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+        return orderPage.map(this::mapToDto);
     }
 
     public OrderResponseDto getOrderById(Long orderId, User user) {

@@ -19,6 +19,6 @@ export const store = configureStore({
         address : addressReducer,
         review : reviewReducer,
         payment : paymentReducer,
-        order : orderReducer,
+        orders : orderReducer,
     },
 });

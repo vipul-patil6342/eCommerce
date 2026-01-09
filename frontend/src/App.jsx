@@ -19,6 +19,7 @@ import ProductDetails from './pages/ProductDetails'
 import ProfilePage from './pages/ProfilePage'
 import PaymentSuccess from './components/PaymentSuccess'
 import PaymentCancel from './components/PaymentCancel'
+import MyOrders from './components/MyOrders'
 
 function App() {
 
@@ -55,8 +56,7 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/profile" element={<ProfilePage />} />
-
-
+          <Route path="/my-orders" element={<MyOrders />} />
         </Route>
 
         <Route element={<ProtectRoute role="ADMIN" />}>
