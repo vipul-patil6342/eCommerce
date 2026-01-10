@@ -20,6 +20,7 @@ import ProfilePage from './pages/ProfilePage'
 import PaymentSuccess from './components/PaymentSuccess'
 import PaymentCancel from './components/PaymentCancel'
 import MyOrders from './components/MyOrders'
+import AllOrders from './components/AllOrders'
 
 function App() {
 
@@ -56,8 +57,8 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/my-orders" element={<MyOrders />} />
         </Route>
+          <Route path="/all-orders" element={<AllOrders />} />
 
         <Route element={<ProtectRoute role="ADMIN" />}>
           <Route path="/admin" element={<AdminPage />} />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Home, Package, AlertCircle, ClipboardList } from 'lucide-react';
 import InventoryManagement from '../components/InventoryManagement';
 import { useSelector } from 'react-redux';
+import AllOrders from '../components/AllOrders';
 
 const AdminPage = () => {
     const [currentView, setCurrentView] = useState('dashboard');
@@ -72,12 +73,7 @@ const AdminPage = () => {
                     )}
 
                     {currentView === 'orders' && (
-                        <div className="p-6">
-                            <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow border p-8 max-w-7xl mx-auto`}>
-                                <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Orders</h2>
-                                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>View orders and inventory analytics</p>
-                            </div>
-                        </div>
+                        <AllOrders />
                     )}
                 </div>
             </div>

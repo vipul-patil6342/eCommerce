@@ -88,14 +88,11 @@ public class OrderService {
         return orderPage.map(this::mapToDto);
     }
 
-    public OrderResponseDto getOrderById(Long orderId, User user) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-
-        if (!order.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("Access Denied");
+    public OrderResponseDto getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) {
+            return null;
         }
-
         return mapToDto(order);
     }
 

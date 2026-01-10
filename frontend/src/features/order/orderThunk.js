@@ -30,3 +30,20 @@ export const getMyOrders = createAsyncThunk(
         }
     }
 )
+
+export const getAllOrders = createAsyncThunk(
+    'orders/getAllOrders',
+    async ({ pageNumber, size }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.get("/orders", {
+                params: {
+                    page: pageNumber,
+                    size
+                }
+            })
+            return response.data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)

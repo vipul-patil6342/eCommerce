@@ -4,6 +4,7 @@ import com.vipulpatil.eCommerce.dto.OrderResponseDto;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
 
     private final OrderService orderService;
@@ -44,9 +46,10 @@ public class OrderController {
     @GetMapping("/{orderId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrderResponseDto> getOrderById(
-            @PathVariable Long orderId,
-            @AuthenticationPrincipal User user
+            @PathVariable Long orderId
     ) {
-        return ResponseEntity.ok(orderService.getOrderById(orderId, user));
+        log.info("searching order for id : {}" , orderId);
+
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 }

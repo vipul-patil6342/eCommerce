@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { fetchOrderById, getMyOrders } from "./orderThunk";
+import { fetchOrderById, getAllOrders, getMyOrders } from "./orderThunk";
 
 const initialState = {
     currentOrder: null,
@@ -8,7 +8,7 @@ const initialState = {
     error: null,
     totalPages: 0,
     totalElements: 0,
-    size : 10,
+    size: 10,
     currentPage: 0
 }
 
@@ -42,7 +42,9 @@ const orderSlice = createSlice({
             .addCase(fetchOrderById.pending, pending)
             .addCase(fetchOrderById.fulfilled, (state, action) => {
                 state.loading = false;
-                state.currentOrder = action.payload;
+                state.orders = Array.isArray(action.payload)
+                    ? action.payload
+                    : (action.payload ? [action.payload] : []);
             })
             .addCase(fetchOrderById.rejected, rejected)
 
@@ -50,13 +52,23 @@ const orderSlice = createSlice({
             .addCase(getMyOrders.pending, pending)
             .addCase(getMyOrders.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log(action.payload)
                 state.orders = action.payload.content;
                 state.totalPages = action.payload.totalPages;
                 state.totalElements = action.payload.totalElements;
                 state.error = null;
             })
             .addCase(getMyOrders.rejected, rejected)
+
+            //getAllOrders
+            .addCase(getAllOrders.pending, pending)
+            .addCase(getAllOrders.fulfilled, (state, action) => {
+                state.loading = false;
+                state.orders = action.payload.content;
+                state.totalPages = action.payload.totalPages;
+                state.totalElements = action.payload.totalElements;
+                state.error = null;
+            })
+            .addCase(getAllOrders.rejected, rejected)
     }
 })
 

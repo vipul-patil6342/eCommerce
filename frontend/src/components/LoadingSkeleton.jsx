@@ -1,12 +1,11 @@
 const CustomLoading = ({ darkMode }) => (
-    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div className="flex h-screen items-center justify-center bg-black/40 backdrop-blur-sm rounded-lg">
         <div
             className={`h-10 w-10 animate-spin rounded-full border-4 
         ${darkMode ? "border-white" : "border-black"} border-t-transparent`}
         />
     </div>
 );
-
 
 const LoadingSkeleton = ({ darkMode }) => {
     return (
