@@ -3,6 +3,7 @@ import { Home, Package, AlertCircle, ClipboardList } from 'lucide-react';
 import InventoryManagement from '../components/InventoryManagement';
 import { useSelector } from 'react-redux';
 import AllOrders from '../components/AllOrders';
+import StockAlerts from '../components/StockAlerts';
 
 const AdminPage = () => {
     const [currentView, setCurrentView] = useState('dashboard');
@@ -64,12 +65,7 @@ const AdminPage = () => {
                     )}
 
                     {currentView === 'stock' && (
-                        <div className="p-6">
-                            <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow border p-8 max-w-7xl mx-auto`}>
-                                <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Stock Alerts</h2>
-                                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Monitor low and out of stock items</p>
-                            </div>
-                        </div>
+                        <StockAlerts />
                     )}
 
                     {currentView === 'orders' && (

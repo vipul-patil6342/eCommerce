@@ -113,4 +113,8 @@ public class ProductService {
     public Page<ProductResponseDto> getProductsByCategory(String category, Pageable pageable) {
         return productRepository.findByCategory(category, pageable);
     }
+
+    public Page<ProductResponseDto> getStockAlerts(int threshold, Pageable pageable) {
+        return productRepository.findByLowStock(threshold, pageable);
+    }
 }

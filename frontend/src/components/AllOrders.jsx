@@ -65,8 +65,6 @@ const AllOrders = () => {
         );
     }
 
-    console.log(orders)
-
     const getStatusColor = (status) => {
         switch (status) {
             case 'PAID':
@@ -227,9 +225,8 @@ const AllOrders = () => {
                 </div>
             </div>
 
-            {/* Sticky Pagination Footer */}
             <div className={`sticky bottom-0 w-full`}>
-                <div className="max-w-4xl mx-auto">
+                <div className="mx-auto">
                     <PaginationControls
                         currentPage={currentPage}
                         totalPages={totalPages}

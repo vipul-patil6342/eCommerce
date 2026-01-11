@@ -93,6 +93,24 @@ export const getProductsByCategory = createAsyncThunk(
     }
 )
 
+export const getStockAlerts = createAsyncThunk(
+    'products/getStockAlerts',
+    async ({ threshold, pageNumber, size = 10 }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.get(`/products/low-stock`, {
+                params: {
+                    threshold,
+                    page: pageNumber,
+                    size,
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+
 export const getProductById = createAsyncThunk(
     'products/getProductById',
     async (id, thunkAPI) => {

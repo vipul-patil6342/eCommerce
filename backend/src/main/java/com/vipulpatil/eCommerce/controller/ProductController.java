@@ -31,7 +31,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
-            @Valid  @RequestPart("product") ProductRequestDto request,
+            @Valid @RequestPart("product") ProductRequestDto request,
             @RequestPart("image") MultipartFile file
     ) throws IOException {
         log.info("Product: {}", request);
@@ -87,9 +87,26 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/category/{category}")
-    public ResponseEntity<Page<ProductResponseDto>> getProductsByCategory(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "price") String sortBy, @RequestParam(defaultValue = "ASC") Sort.Direction direction, @PathVariable String category) {
+    public ResponseEntity<Page<ProductResponseDto>> getProductsByCategory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "price") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+            @PathVariable String category
+    ) {
         Pageable pageable = PageRequest.of(page, 12, Sort.by(direction, sortBy));
         Page<ProductResponseDto> response = productService.getProductsByCategory(category, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/low-stock")
+    public ResponseEntity<Page<ProductResponseDto>> getStockAlerts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "20") int threshold
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "stock"));
+        Page<ProductResponseDto> response = productService.getStockAlerts(threshold, pageable);
         return ResponseEntity.ok(response);
     }
 }

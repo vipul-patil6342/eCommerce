@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { addProduct, deleteProduct, getProductById, getProducts, getProductsByCategory, searchProduct, updateProduct } from "./productThunk";
+import { addProduct, deleteProduct, getProductById, getProducts, getProductsByCategory, getStockAlerts, searchProduct, updateProduct } from "./productThunk";
 
 
 const addThunkCase = (builder, thunk, isArray = true) => {
@@ -60,6 +60,7 @@ export const productSlice = createSlice({
         addThunkCase(builder, getProductsByCategory, true);
         addThunkCase(builder, getProductById, false);
         addThunkCase(builder, searchProduct, true);
+        addThunkCase(builder, getStockAlerts, true);
 
         builder
             .addCase(addProduct.pending, (state) => {
