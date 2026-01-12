@@ -42,6 +42,7 @@ const orderSlice = createSlice({
             .addCase(fetchOrderById.pending, pending)
             .addCase(fetchOrderById.fulfilled, (state, action) => {
                 state.loading = false;
+                state.currentOrder = action.payload;
                 state.orders = Array.isArray(action.payload)
                     ? action.payload
                     : (action.payload ? [action.payload] : []);

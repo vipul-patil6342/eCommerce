@@ -1,5 +1,5 @@
 const CustomLoading = ({ darkMode }) => (
-    <div className="flex h-screen items-center justify-center bg-black/40 backdrop-blur-sm rounded-lg">
+    <div className="flex h-screen items-center justify-center bg-black/40 backdrop-blur-sm">
         <div
             className={`h-10 w-10 animate-spin rounded-full border-4 
         ${darkMode ? "border-white" : "border-black"} border-t-transparent`}

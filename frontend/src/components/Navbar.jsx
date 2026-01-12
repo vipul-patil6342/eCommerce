@@ -3,7 +3,7 @@ import { Search, User, ShoppingBag, Moon, Sun, X, Home } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../features/theme/themeSlice';
 import SidebarLayout from './SidebarLayout';
-import { searchProduct } from '../features/product/productThunk';
+import { getProducts, searchProduct } from '../features/product/productThunk';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
@@ -27,6 +27,10 @@ const Navbar = () => {
     }, [showSearch]);
 
     useEffect(() => {
+        if (!searchTerm) {
+            dispatch(getProducts());
+        };
+
         if (searchTerm) {
             const delay = setTimeout(() => {
                 dispatch(searchProduct({ searchTerm }))

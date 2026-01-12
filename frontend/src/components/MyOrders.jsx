@@ -20,8 +20,6 @@ const MyOrders = () => {
         dispatch(getMyOrders({ pageNumber: currentPage, size }))
     }, [dispatch, currentPage]);
 
-    console.log(orders)
-
     const handleNextPage = () => {
         if (currentPage < totalPages - 1) {
             dispatch(setCurrentPage(currentPage + 1));
@@ -90,7 +88,7 @@ const MyOrders = () => {
                                     >
                                         <div className="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
                                             <div className="flex items-start sm:items-center gap-2 sm:gap-4 flex-1 min-w-0">
-                                                <div className={`p-2 sm:p-3 rounded-lg flex-shrink-0 ${darkMode ? 'bg-orange-500/20' : 'bg-orange-100'}`}>
+                                                <div className={`p-2 sm:p-3 rounded-lg shrink-0 ${darkMode ? 'bg-orange-500/20' : 'bg-orange-100'}`}>
                                                     <Package className={`w-5 h-5 sm:w-6 sm:h-6 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`} />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -110,7 +108,7 @@ const MyOrders = () => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                                            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                                                 <div className="text-right">
                                                     <p className={`text-lg sm:text-2xl font-bold ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
                                                         Rs. {order.totalAmount}
@@ -128,7 +126,7 @@ const MyOrders = () => {
                                         <div className={`border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} p-4 sm:p-6 space-y-4 sm:space-y-6`}>
                                             {/* Payment Info */}
                                             <div className="flex items-start gap-3 sm:gap-4">
-                                                <CreditCard className={`w-5 h-5 flex-shrink-0 mt-0.5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                                                <CreditCard className={`w-5 h-5 shrink-0 mt-0.5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
                                                 <div className="min-w-0">
                                                     <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Payment ID</p>
                                                     <p className={`font-mono text-xs sm:text-sm break-all ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -162,7 +160,7 @@ const MyOrders = () => {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div className="text-right flex-shrink-0">
+                                                            <div className="text-right shrink-0">
                                                                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Price</p>
                                                                 <p className={`text-base sm:text-lg font-bold ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
                                                                     Rs. {item.price}
@@ -181,7 +179,7 @@ const MyOrders = () => {
                                                             <span className={`truncate ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                                                 {item.productName} × {item.quantity}
                                                             </span>
-                                                            <span className={`flex-shrink-0 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                            <span className={`shrink-0 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                                                 Rs. {item.price * item.quantity}
                                                             </span>
                                                         </div>
@@ -204,7 +202,7 @@ const MyOrders = () => {
                     )}
                 </div>
             </div>
-            <div className='sticky bottom-0 bg-inherit pt-4'>
+            <div className='sticky bottom-0'>
                 <PaginationControls
                     currentPage={currentPage}
                     totalPages={totalPages}

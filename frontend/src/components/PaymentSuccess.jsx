@@ -1,6 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../utils/axiosInstance";
 import { CheckCircle, Loader, AlertCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrderById } from "../features/order/orderThunk";
@@ -10,7 +9,7 @@ const PaymentSuccess = () => {
     const [params] = useSearchParams();
     const orderId = params.get("orderId");
 
-    const { currentOrder: order, loading, error } = useSelector(state => state.order);
+    const { currentOrder: order, loading, error } = useSelector(state => state.orders);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
@@ -20,13 +19,15 @@ const PaymentSuccess = () => {
     useEffect(() => {
         if (!orderId) return;
 
+        if (order?.status === "PAID") return;
+
         const interval = setInterval(() => {
             dispatch(fetchOrderById(orderId));
         }, 2000);
 
         return () => {
             clearInterval(interval);
-            dispatch(clearOrder);
+            dispatch(clearOrder());
         }
     }, [dispatch, orderId]);
 
@@ -70,7 +71,7 @@ const PaymentSuccess = () => {
                     <h1 className={`text-2xl font-bold mb-2 ${darkMode ? "text-white" : "text-gray-800"}`}>Error Loading Order</h1>
                     <p className={`mb-6 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>We couldn't retrieve your order details. Please contact support if the problem persists.</p>
                     <button
-                        onClick={() => navigate("/orders")}
+                        onClick={() => navigate("/my-orders")}
                         className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition duration-200"
                     >
                         View My Orders
@@ -153,7 +154,7 @@ const PaymentSuccess = () => {
                         )}
 
                         <button
-                            onClick={() => navigate("/orders")}
+                            onClick={() => navigate("/my-orders")}
                             className="w-full cursor-pointer bg-linear-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-3 rounded-lg transition duration-200 mb-3 shadow-lg hover:shadow-xl"
                         >
                             View My Orders
