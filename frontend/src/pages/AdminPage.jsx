@@ -4,6 +4,7 @@ import InventoryManagement from '../components/InventoryManagement';
 import { useSelector } from 'react-redux';
 import AllOrders from '../components/AllOrders';
 import StockAlerts from '../components/StockAlerts';
+import AdminDashboard from '../components/AdminDashboard';
 
 const AdminPage = () => {
     const [currentView, setCurrentView] = useState('dashboard');
@@ -52,12 +53,7 @@ const AdminPage = () => {
             <div className="flex-1 overflow-y-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <div className={`min-h-full ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
                     {currentView === 'dashboard' && (
-                        <div className="p-6">
-                            <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow border p-8 max-w-7xl mx-auto`}>
-                                <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Dashboard</h2>
-                                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Welcome to your inventory management system</p>
-                            </div>
-                        </div>
+                        <AdminDashboard />
                     )}
 
                     {currentView === 'products' && (

@@ -1,5 +1,6 @@
 package com.vipulpatil.eCommerce.repository;
 
+import com.vipulpatil.eCommerce.dto.ProductCategoryCountResponseDto;
 import com.vipulpatil.eCommerce.dto.ProductResponseDto;
 import com.vipulpatil.eCommerce.entity.Product;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -36,4 +39,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "p.stock, p.brand, p.averageRating, p.reviewCount) " +
             "FROM Product p WHERE p.stock < :threshold")
     Page<ProductResponseDto> findByLowStock(@Param("threshold") int threshold, Pageable pageable);
+
+    @Query("""
+            SELECT COUNT(p)
+            FROM Product p
+            WHERE (:startDate IS NULL OR p.createdAt >= :startDate)
+            """)
+    Long countByCreatedAtFromDate(LocalDateTime startDate);
+
+    @Query("""
+                SELECT new com.vipulpatil.eCommerce.dto.ProductCategoryCountResponseDto(
+                    p.category,
+                    COUNT(p)
+                )
+                FROM Product p
+                GROUP BY p.category
+            """)
+    List<ProductCategoryCountResponseDto> getProductCountByCategory();
+
 }

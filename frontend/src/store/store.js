@@ -8,6 +8,7 @@ import addressReducer from "../features/address/addressSlice";
 import reviewReducer from "../features/review/reviewSlice";
 import paymentReducer from "../features/payment/paymentSlice";
 import orderReducer from "../features/order/orderSlice";
+import dashboardReducer from "../features/dashboard/dashboardSlice";
 
 export const store = configureStore({
     reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
         review : reviewReducer,
         payment : paymentReducer,
         orders : orderReducer,
+        dashboard : dashboardReducer,
     },
 });

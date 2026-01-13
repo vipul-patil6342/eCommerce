@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/send-email").permitAll()
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/otp/**").permitAll()
+                        .requestMatchers("/admin/dashboard").hasRole("ADMIN")
                         .requestMatchers("/payments/webhook").permitAll()
                         .requestMatchers("/products/**","/address/**","/reviews","/orders/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()

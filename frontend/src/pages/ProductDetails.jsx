@@ -7,7 +7,7 @@ import { getWishlist, toggleWishlist } from "../features/wishlist/wishlistThunk"
 import { addToCart } from "../features/cart/cartThunk";
 import { showError, showSuccess } from "../utils/toast";
 import CustomerReviews from "../components/CustomerReviews";
-import { CustomLoading } from "../components/LoadingSkeleton";
+import { CustomLoading, LoadingSkeleton } from "../components/LoadingSkeleton";
 
 const ProductDetails = () => {
     const { items } = useSelector(state => state.cart);
@@ -62,7 +62,7 @@ const ProductDetails = () => {
         <div className={`${darkMode ? "bg-gray-900" : "bg-white"}`}>
             <div className="min-h-screen py-8 px-4 sm:px-6">
                 
-                {loading && <CustomLoading darkMode={darkMode} />}
+                {loading && <LoadingSkeleton darkMode={darkMode} />}
 
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">

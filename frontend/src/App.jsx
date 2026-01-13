@@ -21,6 +21,7 @@ import PaymentSuccess from './components/PaymentSuccess'
 import PaymentCancel from './components/PaymentCancel'
 import MyOrders from './components/MyOrders'
 import AllOrders from './components/AllOrders'
+import AdminDashboard from './components/AdminDashboard'
 
 function App() {
 
@@ -61,7 +62,6 @@ function App() {
         </Route>
 
         <Route element={<ProtectRoute role="ADMIN" />}>
-          <Route path="/all-orders" element={<AllOrders />} />
           <Route path="/admin" element={<AdminPage />} />
         </Route>
 
