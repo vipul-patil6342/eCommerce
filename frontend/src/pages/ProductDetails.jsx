@@ -62,7 +62,7 @@ const ProductDetails = () => {
         <div className={`${darkMode ? "bg-gray-900" : "bg-white"}`}>
             <div className="min-h-screen py-8 px-4 sm:px-6">
                 
-                {loading && <LoadingSkeleton darkMode={darkMode} />}
+                {loading && <CustomLoading darkMode={darkMode} />}
 
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">

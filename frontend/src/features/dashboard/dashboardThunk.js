@@ -11,10 +11,22 @@ export const getDashboardSummary = createAsyncThunk(
                     range
                 }
             });
-            console.log(response.data)
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(getErrorMessage(error));
         }
     }
 )
+
+export const getProductsCountByCategory = createAsyncThunk(
+    'dashboard/getProductsCountByCategory',
+    async (_, thunkAPI) => {
+        try {
+            const response = await axiosInstance.get("/admin/dashboard/category-product-count");
+            return response.data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+

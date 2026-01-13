@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { getDashboardSummary } from "./dashboardThunk";
+import { getDashboardSummary, getProductsCountByCategory } from "./dashboardThunk";
 
 const initialState = {
     range: "WEEK",
@@ -42,6 +42,7 @@ const dashboardSlice = createSlice({
         }
 
         builder
+            //get dashboard summary
             .addCase(getDashboardSummary.pending, pending)
             .addCase(getDashboardSummary.fulfilled, (state, action) => {
                 state.loading = false;
@@ -49,6 +50,14 @@ const dashboardSlice = createSlice({
                 state.filtered = action.payload.filtered;
             })
             .addCase(getDashboardSummary.rejected, rejected)
+
+            //get product count by category
+            .addCase(getProductsCountByCategory.pending , pending)
+            .addCase(getProductsCountByCategory.fulfilled , (state,action) =>{
+                state.loading = false;
+                state.productsByCategory = action.payload;
+            })
+            .addCase(getProductsCountByCategory.rejected , rejected)
     }
 });
 
