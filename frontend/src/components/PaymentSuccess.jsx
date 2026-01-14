@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CheckCircle, Loader, AlertCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrderById } from "../features/order/orderThunk";
@@ -16,26 +16,53 @@ const PaymentSuccess = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // Polling effect
+    // 🔒 Track interval with useRef (MANDATORY)
+    const intervalRef = useRef(null);
+
+    // 🔹 Polling effect with proper interval tracking
     useEffect(() => {
         if (!orderId) return;
         if (order?.status === "PAID") return;
 
-        const interval = setInterval(() => {
+        // 🔒 Prevent duplicate intervals
+        if (intervalRef.current) return;
+
+        intervalRef.current = setInterval(() => {
             dispatch(fetchOrderById(orderId));
         }, 2000);
 
-        return () => clearInterval(interval);
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
     }, [dispatch, orderId, order?.status]);
 
-    // Cleanup on unmount
+    // 🔹 Cleanup when leaving page
     useEffect(() => {
         return () => {
             dispatch(clearOrder());
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
         };
     }, [dispatch]);
 
+    // 🧪 Stop polling when tab is hidden (STRONGLY recommended)
+    useEffect(() => {
+        const handleVisibility = () => {
+            if (document.hidden && intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
 
+        document.addEventListener("visibilitychange", handleVisibility);
+        return () =>
+            document.removeEventListener("visibilitychange", handleVisibility);
+    }, []);
 
     if (!orderId) {
         return (
