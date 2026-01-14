@@ -17,6 +17,7 @@ const ProductDetails = () => {
     const dispatch = useDispatch();
 
     const { selectedProduct, loading } = useSelector(state => state.products);
+    const {  loading : cartLoading } = useSelector(state => state.cart);
     const { theme } = useSelector(state => state.theme);
 
     useEffect(() => {
@@ -122,7 +123,7 @@ const ProductDetails = () => {
                             <div className="flex flex-col sm:flex-row gap-3 mt-4">
                                 <button
                                     onClick={handleAddToCart}
-                                    disabled={isOutOfStock}
+                                    disabled={isOutOfStock || cartLoading}
                                     className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg text-white text-sm font-semibold transition-all duration-200
                                         ${isOutOfStock
                                             ? "bg-gray-400 cursor-not-allowed"
