@@ -117,7 +117,7 @@ public class AuthController {
     @PostMapping("/forgot-password")
     @RateLimit(limit = 3 , window = 60)
     public ResponseEntity<?> sendOtp(
-            @RequestBody EmailRequestDto request
+            @Valid @RequestBody EmailRequestDto request
     ){
         log.info("email :{}" , request);
         passwordResetOtpService.sendPasswordResetOtp(request);
@@ -128,7 +128,7 @@ public class AuthController {
     @PostMapping("/reset-password")
     @RateLimit(limit = 3 , window = 60)
     public ResponseEntity<?> resetPassword(
-            @RequestBody PasswordResetRequest request
+            @Valid @RequestBody PasswordResetRequest request
     ){
         passwordResetOtpService.resetPassword(request);
 
