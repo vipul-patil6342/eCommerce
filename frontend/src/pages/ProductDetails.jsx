@@ -114,7 +114,7 @@ const ProductDetails = () => {
                             </div>
 
                             {/* Description */}
-                            <p className={`${darkMode ? "text-gray-300" : "text-gray-600"} leading-relaxed text-sm sm:text-base`}>
+                            <p className={`${darkMode ? "text-gray-300" : "text-gray-600"} leading-relaxed text-sm sm:text-base`} style={{ whiteSpace: "pre-line" }}>
                                 {selectedProduct.description}
                             </p>
 
