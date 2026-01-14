@@ -19,6 +19,7 @@ const PaymentSuccess = () => {
     useEffect(() => {
         if (!orderId) return;
 
+        // If already paid, stop polling
         if (order?.status === "PAID") return;
 
         const interval = setInterval(() => {
@@ -27,9 +28,9 @@ const PaymentSuccess = () => {
 
         return () => {
             clearInterval(interval);
-            dispatch(clearOrder());
-        }
-    }, [dispatch, orderId]);
+        };
+    }, [dispatch, orderId, order?.status]);
+
 
     if (!orderId) {
         return (
