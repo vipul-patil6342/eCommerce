@@ -1,5 +1,6 @@
 package com.vipulpatil.eCommerce.controller;
 
+import com.vipulpatil.eCommerce.annotation.RateLimit;
 import com.vipulpatil.eCommerce.dto.*;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.security.service.AuthService;
@@ -33,6 +34,7 @@ public class AuthController {
     private static final int COOKIE_AGE = 30 * 24 * 60 * 60;
 
     @PostMapping("/login")
+    @RateLimit(limit = 5 , window = 60)
     public ResponseEntity<LoginResponseDto> login(
             @Valid  @RequestBody LoginRequestDto loginRequestDto,
             HttpServletResponse response) {
@@ -45,6 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @RateLimit(limit = 5 , window = 60)
     public ResponseEntity<SignupResponseDto> signup(
             @Valid @RequestBody SignupRequestDto signupRequestDto
     ) {
@@ -112,6 +115,7 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
+    @RateLimit(limit = 3 , window = 60)
     public ResponseEntity<?> sendOtp(
             @RequestBody EmailRequestDto request
     ){
@@ -122,6 +126,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
+    @RateLimit(limit = 3 , window = 60)
     public ResponseEntity<?> resetPassword(
             @RequestBody PasswordResetRequest request
     ){
