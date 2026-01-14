@@ -22,6 +22,7 @@ import PaymentCancel from './components/PaymentCancel'
 import MyOrders from './components/MyOrders'
 import AllOrders from './components/AllOrders'
 import AdminDashboard from './components/AdminDashboard'
+import PasswordResetPage from './pages/PasswordResetPage'
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/otp" element={<OtpPage />} />
+        <Route path="/reset-password" element={<PasswordResetPage />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-cancel" element={<PaymentCancel />} />
 

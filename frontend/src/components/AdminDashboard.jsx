@@ -139,7 +139,7 @@ const AdminDashboard = () => {
 
                     {/* Products by Category - Table View */}
                     {productsByCategory && productsByCategory.length > 0 && (
-                        <div className={`mt-8 ${darkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg shadow-md p-6`}>
+                        <div className={`mt-8 mb-12 ${darkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg shadow-md p-6`}>
                             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-slate-900'} mb-6`}>
                                 Products by Category
                             </h3>

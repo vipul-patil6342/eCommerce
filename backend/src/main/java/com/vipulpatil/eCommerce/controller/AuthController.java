@@ -4,7 +4,7 @@ import com.vipulpatil.eCommerce.dto.*;
 import com.vipulpatil.eCommerce.entity.User;
 import com.vipulpatil.eCommerce.security.service.AuthService;
 import com.vipulpatil.eCommerce.security.service.JwtService;
-import com.vipulpatil.eCommerce.service.RefreshTokenService;
+import com.vipulpatil.eCommerce.service.PasswordResetOtpService;
 import com.vipulpatil.eCommerce.utils.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,7 +28,7 @@ public class AuthController {
     private final AuthService authService;
     private final CookieUtil cookieUtil;
     private final JwtService jwtService;
-    private final RefreshTokenService refreshTokenService;
+    private final PasswordResetOtpService passwordResetOtpService;
 
     private static final int COOKIE_AGE = 30 * 24 * 60 * 60;
 
@@ -111,6 +109,25 @@ public class AuthController {
             log.error("Logout failed", e);
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> sendOtp(
+            @RequestBody EmailRequestDto request
+    ){
+        log.info("email :{}" , request);
+        passwordResetOtpService.sendPasswordResetOtp(request);
+
+        return ResponseEntity.ok("If the email exists, an OTP has been sent");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestBody PasswordResetRequest request
+    ){
+        passwordResetOtpService.resetPassword(request);
+
+        return ResponseEntity.ok("Password Reset Successful");
     }
 
     private void addAuthCookies(HttpServletResponse response, LoginResponseDto loginResponse) {

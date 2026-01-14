@@ -1,16 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAuthState, loginUser, logoutUser, sendOtp, signupUser, verifyOtp } from "./authThunk";
+import { forgotPassword, getAuthState, loginUser, logoutUser, resetPassword, sendOtp, signupUser, verifyOtp } from "./authThunk";
 
 const initialState = {
     isLoading: false,
     user: null,
     error: null,
+    email: null,
     isAuthenticated: false,
     signupData: {
         name: "",
         username: "",
         password: ""
-    }
+    },
+    successMessage: null,
+    passwordReset: false
 };
 
 const authSlice = createSlice({
@@ -28,29 +31,41 @@ const authSlice = createSlice({
         },
         clearSignupData: (state) => {
             state.signupData = null;
+        },
+        clearSuccessMessage: (state) => {
+            state.successMessage = null;
+        },
+        resetForgotPasswordState: (state) => {
+            state.passwordReset = false;
+            state.email = null;
+        },
+        setEmail: (state, action) => {
+            state.email = action.payload;
         }
     },
 
     extraReducers: (builder) => {
+
+        const pending = (state) => {
+            state.isLoading = true;
+            state.error = null;
+        }
+
+        const rejected = (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        }
+
         builder
             // SIGNUP
-            .addCase(signupUser.pending, (state) => {
-                state.isLoading = true;
-                state.error = null;
-            })
+            .addCase(signupUser.pending, pending)
             .addCase(signupUser.fulfilled, (state) => {
                 state.isLoading = false;
             })
-            .addCase(signupUser.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.payload
-            })
+            .addCase(signupUser.rejected, rejected)
 
             // LOGIN
-            .addCase(loginUser.pending, (state) => {
-                state.isLoading = true;
-                state.error = null;
-            })
+            .addCase(loginUser.pending, pending)
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.user = action.payload.user;
@@ -64,24 +79,16 @@ const authSlice = createSlice({
             })
 
             //LOGOUT USER
-            .addCase(logoutUser.pending, (state) => {
-                state.isLoading = true;
-                state.error = null;
-            })
+            .addCase(logoutUser.pending, pending)
             .addCase(logoutUser.fulfilled, (state) => {
                 state.isLoading = false;
                 state.user = null;
                 state.isAuthenticated = false;
             })
-            .addCase(logoutUser.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.payload;
-            })
+            .addCase(logoutUser.rejected, rejected)
 
             // AUTH STATE
-            .addCase(getAuthState.pending, (state) => {
-                state.isLoading = true;
-            })
+            .addCase(getAuthState.pending, pending)
             .addCase(getAuthState.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isAuthenticated = action.payload.authenticated;
@@ -94,37 +101,42 @@ const authSlice = createSlice({
             })
 
             //Send OTP
-            .addCase(sendOtp.pending, (state) => {
-                console.error(">>> generateAndSaveOtp CALLED <<<");
-
-                state.isLoading = true;
-                state.error = null;
-            })
+            .addCase(sendOtp.pending, pending)
             .addCase(sendOtp.fulfilled, (state) => {
 
                 state.isLoading = false;
                 state.error = null;
             })
-            .addCase(sendOtp.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.payload;
-            })
+            .addCase(sendOtp.rejected, rejected)
             //Verify OTP
-            .addCase(verifyOtp.pending, (state) => {
-                console.error(">>> verifyOtp CALLED <<<");
-                state.isLoading = true;
-                state.error = null;
-            })
+            .addCase(verifyOtp.pending, pending)
             .addCase(verifyOtp.fulfilled, (state) => {
                 state.isLoading = false;
                 state.error = null;
             })
-            .addCase(verifyOtp.rejected, (state, action) => {
+            .addCase(verifyOtp.rejected, rejected)
+
+            //Forgot password
+            .addCase(forgotPassword.pending, pending)
+            .addCase(forgotPassword.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.error = action.payload;
+                state.error = null;
+                state.successMessage = action.payload;
+                state.passwordReset = true;
             })
+            .addCase(forgotPassword.rejected, rejected)
+
+            //Reset password
+            .addCase(resetPassword.pending, pending)
+            .addCase(resetPassword.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.error = null;
+                state.successMessage = action.payload;
+                state.passwordReset = false;
+            })
+            .addCase(resetPassword.rejected, rejected)
     }
 });
 
-export const { resetError, setSignupData, clearSignupData } = authSlice.actions;
+export const { resetError, setSignupData, clearSignupData, clearSuccessMessage, resetForgotPasswordState, setEmail } = authSlice.actions;
 export default authSlice.reducer;

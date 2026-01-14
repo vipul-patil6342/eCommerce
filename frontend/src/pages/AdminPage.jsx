@@ -20,9 +20,9 @@ const AdminPage = () => {
     ];
 
     return (
-        <div className={`flex flex-col h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} scrollbar-hide`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} relative`}>
             {/* Top Navigation Bar */}
-            <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-800'} `}>
+            <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-800'} sticky top-0 z-50 `}>
                 <div className="px-6 py-2 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Admin Panel</h1>
                 </div>

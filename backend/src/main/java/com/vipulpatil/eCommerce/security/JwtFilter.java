@@ -36,6 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/auth/signup",
             "/auth/refresh",
             "/auth/state",
+            "/auth/forgot-password",
+            "/auth/reset-password",
             "/oauth2/",
             "/send-email",
             "/otp/send",

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthState, loginUser } from '../features/auth/authThunk';
+import { forgotPassword, getAuthState, loginUser } from '../features/auth/authThunk';
 import OAuth2Buttons from '../components/OAuth2Buttons';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { CustomLoading } from '../components/LoadingSkeleton';
-import { resetError } from '../features/auth/authSlice';
+import { resetError, resetForgotPasswordState, setEmail } from '../features/auth/authSlice';
+import { showError } from '../utils/toast';
 
 export default function LoginPage() {
-    const { isAuthenticated, isLoading, error: authError } = useSelector(state => state.auth);
+    const { isAuthenticated, isLoading, error: authError, email } = useSelector(state => state.auth);
     const theme = useSelector(state => state.theme.theme);
     const darkMode = theme === "dark";
 
@@ -23,14 +24,14 @@ export default function LoginPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(isAuthenticated){
+        if (isAuthenticated) {
             navigate("/products");
         }
     }, [isAuthenticated, navigate]);
 
     useEffect(() => {
-            dispatch(resetError());
-        }, [dispatch]);
+        dispatch(resetError());
+    }, [dispatch]);
 
     if (isLoading) {
         return (
@@ -74,31 +75,44 @@ export default function LoginPage() {
         }
     };
 
+    const navigateToForgotPassword = async () => {
+        if (!formData.email) {
+            showError("Please Enter Email First");
+            return;
+        }
+
+        const resultAction = await dispatch(forgotPassword({ email: formData.email }));
+        if (forgotPassword.fulfilled.match(resultAction)) {
+            dispatch(setEmail(formData.email));
+            navigate("/reset-password");
+        }else{
+            dispatch(resetForgotPasswordState());
+            showError(authError);
+        }
+    }
+
     return (
         <div
-            className={`flex-1 transition-colors duration-300 ${
-                darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
-            }`}
+            className={`flex-1 transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
+                }`}
         >
             <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
                 {/* LEFT SECTION */}
                 <div
-                    className={`flex items-center justify-center p-4 sm:p-6 ${
-                        darkMode ? 'bg-gray-800' : 'bg-gray-50'
-                    }`}
+                    className={`flex items-center justify-center p-4 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'
+                        }`}
                 >
                     <div className="w-full max-w-md">
                         <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
                         <p
-                            className={`text-sm mb-8 ${
-                                darkMode ? 'text-gray-400' : 'text-gray-600'
-                            }`}
+                            className={`text-sm mb-8 ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                                }`}
                         >
                             Log in to continue
                         </p>
 
                         {/* FORM */}
-                        <div className="space-y-4">
+                        <form className="space-y-4">
 
                             {/* Email */}
                             <div>
@@ -115,22 +129,24 @@ export default function LoginPage() {
                                     value={formData.email}
                                     onChange={handleChange}
                                     placeholder="Enter Your Email"
-                                    className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${
-                                        darkMode
-                                            ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
-                                            : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
-                                    } focus:outline-none`}
+                                    className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
+                                        ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
+                                        : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
+                                        } focus:outline-none`}
                                 />
                             </div>
 
                             {/* Password */}
                             <div>
-                                <label
-                                    htmlFor="password"
-                                    className="block text-sm font-medium mb-1"
-                                >
-                                    Password
-                                </label>
+                                <div className="flex items-center justify-between mb-1">
+                                    <label
+                                        htmlFor="password"
+                                        className="block text-sm font-medium"
+                                    >
+                                        Password
+                                    </label>
+
+                                </div>
                                 <div className='relative'>
                                     <input
                                         type={showPassword ? "text" : "password"}
@@ -139,15 +155,14 @@ export default function LoginPage() {
                                         value={formData.password}
                                         onChange={handleChange}
                                         placeholder="Enter Your Password"
-                                        className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${
-                                            darkMode
-                                                ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
-                                                : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
-                                        } focus:outline-none`}
+                                        className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
+                                            ? 'bg-gray-700 border-gray-600 focus:border-orange-500 placeholder-gray-400'
+                                            : 'bg-white border-gray-300 focus:border-orange-500 placeholder-gray-500'
+                                            } focus:outline-none`}
                                     />
-                                    <button 
-                                        type='button' 
-                                        onClick={togglePasswordVisibility} 
+                                    <button
+                                        type='button'
+                                        onClick={togglePasswordVisibility}
                                         className='absolute right-3 top-1/2 transform -translate-y-1/2'
                                     >
                                         {showPassword ? (
@@ -155,6 +170,15 @@ export default function LoginPage() {
                                         ) : (
                                             <EyeOff className='w-5 h-5 cursor-pointer' />
                                         )}
+                                    </button>
+                                </div>
+                                <div className='flex w-full mt-2 justify-end '>
+                                    <button
+                                        type="button"
+                                        onClick={navigateToForgotPassword}
+                                        className="text-xs cursor-pointer text-orange-400 hover:text-orange-500 font-medium transition-colors"
+                                    >
+                                        Forgot Password
                                     </button>
                                 </div>
                             </div>
@@ -166,20 +190,20 @@ export default function LoginPage() {
                             )}
 
                             <button
+                                type='submit'
                                 onClick={handleSubmit}
                                 disabled={isLoading}
                                 className="w-full flex items-center justify-center bg-orange-400 hover:bg-orange-500 disabled:bg-orange-300 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform focus:outline-none cursor-pointer"
                             >
                                 Login Now
                             </button>
-                        </div>
+                        </form>
 
                         <OAuth2Buttons />
 
                         <p
-                            className={`text-center text-sm mt-6 ${
-                                darkMode ? 'text-gray-400' : 'text-gray-600'
-                            }`}
+                            className={`text-center text-sm mt-6 ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                                }`}
                         >
                             Don't have an account?{' '}
                             <span
@@ -194,11 +218,10 @@ export default function LoginPage() {
 
                 {/* RIGHT SECTION */}
                 <div
-                    className={`hidden md:flex items-center justify-center p-8 ${
-                        darkMode
-                            ? 'bg-gray-900'
-                            : 'bg-linear-to-br from-orange-500 to-amber-500'
-                    }`}
+                    className={`hidden md:flex items-center justify-center p-8 ${darkMode
+                        ? 'bg-gray-900'
+                        : 'bg-linear-to-br from-orange-500 to-amber-500'
+                        }`}
                 >
                     <div className="text-center text-white max-w-md">
                         <h2 className="text-5xl font-bold mb-6">Welcome Back!</h2>

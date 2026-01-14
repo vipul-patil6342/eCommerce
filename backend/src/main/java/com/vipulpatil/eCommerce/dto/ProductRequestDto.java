@@ -1,9 +1,6 @@
 package com.vipulpatil.eCommerce.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,9 +9,11 @@ import java.math.BigDecimal;
 public class ProductRequestDto {
 
     @NotBlank
+    @Max(100)
     private String name;
 
     @NotBlank
+    @Max(1000)
     private String description;
 
     @NotNull(message = "Price is required")
@@ -29,5 +28,6 @@ public class ProductRequestDto {
     private Integer stock;
 
     @NotBlank
+    @Max(50)
     private String brand;
 }

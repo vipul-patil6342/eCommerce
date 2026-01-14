@@ -66,35 +66,30 @@ export default function OtpPage() {
     };
 
     return (
-        <div className={`min-h-[calc(100vh-68px)] overflow-hidden transition-colors duration-300 ${
-            darkMode
+        <div className={`min-h-[calc(100vh-68px)] overflow-hidden transition-colors duration-300 ${darkMode
                 ? 'bg-linear-to-br from-gray-900 to-gray-800'
                 : 'bg-linear-to-br from-orange-50 to-amber-100'
-        }`}>
+            }`}>
 
             <div className="flex items-center justify-center h-full p-6">
-                
+
                 {isLoading && <CustomLoading darkMode={darkMode} />}
 
                 <div className="w-full max-w-md">
-                    <div className={`rounded-2xl shadow-2xl p-8 transition-colors duration-300 ${
-                        darkMode ? 'bg-gray-800' : 'bg-white'
-                    }`}>
-                        <h2 className={`text-3xl font-bold mb-2 text-center ${
-                            darkMode ? 'text-white' : 'text-gray-900'
+                    <div className={`rounded-2xl shadow-2xl p-8 transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-white'
                         }`}>
+                        <h2 className={`text-3xl font-bold mb-2 text-center ${darkMode ? 'text-white' : 'text-gray-900'
+                            }`}>
                             Verify Your Identity
                         </h2>
-                        <p className={`text-center mb-8 ${
-                            darkMode ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
+                        <p className={`text-center mb-8 ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                            }`}>
                             Enter the 6-digit code sent to your registered email.
                         </p>
 
                         <div className="mb-8">
-                            <label className={`block text-sm font-medium mb-6 text-center ${
-                                darkMode ? 'text-gray-300' : 'text-gray-700'
-                            }`}>
+                            <label className={`block text-sm font-medium mb-6 text-center ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
                                 Enter OTP Code
                             </label>
                             <div className="flex gap-3 justify-center mb-4">
@@ -108,17 +103,15 @@ export default function OtpPage() {
                                         value={digit}
                                         onChange={(e) => handleChange(index, e.target.value)}
                                         onKeyDown={(e) => handleKeyDown(index, e)}
-                                        className={`shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-center text-base sm:text-lg md:text-2xl font-bold border-2 rounded-lg transition focus:outline-none ${
-                                            digit
+                                        className={`shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-center text-base sm:text-lg md:text-2xl font-bold border-2 rounded-lg transition focus:outline-none ${digit
                                                 ? darkMode
                                                     ? 'border-orange-400 bg-gray-700'
                                                     : 'border-orange-500 bg-orange-50'
                                                 : darkMode
                                                     ? 'border-gray-600 bg-gray-700 hover:border-gray-500'
                                                     : 'border-gray-300 bg-white hover:border-gray-400'
-                                        } ${error || authError ? 'border-red-500' : ''} ${
-                                            darkMode ? 'text-white' : 'text-gray-900'
-                                        }`}
+                                            } ${error || authError ? 'border-red-500' : ''} ${darkMode ? 'text-white' : 'text-gray-900'
+                                            }`}
                                         placeholder=""
                                     />
                                 ))}
@@ -136,27 +129,24 @@ export default function OtpPage() {
                             Verify OTP
                         </button>
 
-                        <div className={`flex items-center justify-center text-sm mb-6 ${
-                            darkMode ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
+                        <div className={`flex items-center justify-center text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                            }`}>
                             <Clock className="w-4 h-4 mr-2" />
                             <span>Code expires in 5 minutes</span>
                         </div>
 
-                        <div className={`pt-6 border-t text-center text-sm ${
-                            darkMode
+                        <div className={`pt-6 border-t text-center text-sm ${darkMode
                                 ? 'border-gray-700 text-gray-400'
                                 : 'border-gray-200 text-gray-600'
-                        }`}>
+                            }`}>
                             <p>Didn't receive the code?</p>
                             <button
                                 onClick={handleResendOtp}
                                 disabled={resendLoading}
-                                className={`font-semibold mt-2 transition ${
-                                    darkMode
+                                className={`font-semibold mt-2 transition ${darkMode
                                         ? 'text-orange-400 hover:text-orange-300 disabled:text-orange-600'
                                         : 'text-orange-600 hover:text-orange-700 disabled:text-orange-400'
-                                }`}
+                                    }`}
                             >
                                 {resendLoading ? 'Resending...' : 'Resend OTP'}
                             </button>

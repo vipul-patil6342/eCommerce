@@ -75,3 +75,29 @@ export const verifyOtp = createAsyncThunk(
         }
     }
 )
+
+export const forgotPassword = createAsyncThunk(
+    'auth/forgotPassword',
+    async ({ email }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.post("/auth/forgot-password", { email });
+            return response.data;
+        } catch (error) {
+            console.log(error)
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+
+export const resetPassword = createAsyncThunk(
+    'auth/resetPassword',
+    async ({ email, otp, newPassword }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.post("/auth/reset-password", { email, otp, newPassword });
+            return response.data;
+        } catch (error) {
+            console.log(error)
+            return thunkAPI.rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
