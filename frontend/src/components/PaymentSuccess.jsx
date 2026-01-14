@@ -16,20 +16,25 @@ const PaymentSuccess = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    // Polling effect
     useEffect(() => {
         if (!orderId) return;
-
-        // If already paid, stop polling
         if (order?.status === "PAID") return;
 
         const interval = setInterval(() => {
             dispatch(fetchOrderById(orderId));
         }, 2000);
 
-        return () => {
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
     }, [dispatch, orderId, order?.status]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            dispatch(clearOrder());
+        };
+    }, [dispatch]);
+
 
 
     if (!orderId) {
