@@ -9,7 +9,7 @@ import { resetError, resetForgotPasswordState, setEmail } from '../features/auth
 import { showError } from '../utils/toast';
 
 export default function LoginPage() {
-    const { isAuthenticated, isLoading, error: authError, email } = useSelector(state => state.auth);
+    const { isAuthenticated, isLoading, error: authError } = useSelector(state => state.auth);
     const theme = useSelector(state => state.theme.theme);
     const darkMode = theme === "dark";
 

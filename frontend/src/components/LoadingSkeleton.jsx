@@ -23,6 +23,44 @@ const CustomLoading = ({ darkMode }) => {
     );
 };
 
+const CustomLoginLoading = ({ darkMode }) => {
+    return (
+        <div className={`flex flex-col items-center justify-center h-screen p-4 transition-colors duration-500 ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
+            <style>
+                {`
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .spinner {
+                    animation: spin 1s linear infinite;
+                }
+                `}
+            </style>
+
+            {/* Spinner */}
+            <div
+                className={`spinner w-16 h-16 rounded-full border-4 ${
+                    darkMode
+                        ? 'border-gray-700 border-t-orange-500'
+                        : 'border-gray-300 border-t-orange-600'
+                }`}
+            />
+
+            {/* Message Block */}
+            <div className="mt-8 text-center max-w-sm">
+                <h2 className={`text-xl font-bold mb-2 animate-pulse ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+                    Waking up the server...
+                </h2>
+                <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    The server may take up to <span className="font-semibold text-orange-500">50 seconds</span> to start due to inactivity on the free hosting plan. 
+                    <br />Thank you for your patience!
+                </p>
+            </div>
+        </div>
+    );
+};
+
 
 const LoadingSkeleton = ({ darkMode }) => {
     return (
@@ -190,4 +228,4 @@ const CartSkeleton = ({ darkMode }) => {
     );
 };
 
-export { LoadingSkeleton, CartSkeleton, CustomLoading };
+export { LoadingSkeleton, CartSkeleton, CustomLoading, CustomLoginLoading };

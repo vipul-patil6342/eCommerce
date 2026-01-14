@@ -1,18 +1,28 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { CustomLoginLoading } from './LoadingSkeleton';
 
 const HeroSection = () => {
 
-    const { isAuthenticated } = useSelector(state => state.auth);
+    const { isAuthenticated, isLoading } = useSelector(state => state.auth);
     const { theme } = useSelector(state => state.theme);
     const darkMode = theme === "dark";
 
     const navigate = useNavigate();
 
-    if(isAuthenticated){
+    if (isLoading) {
+        return <CustomLoginLoading darkMode={darkMode} />;
+    }
+
+    if (isAuthenticated) {
         navigate("/products");
     }
+
+    const navigateToLogin = () => {
+        navigate("/login");
+    }
+
+
 
     return (
         <div className={`w-full transition-colors duration-500 ${darkMode ? "bg-gray-900" : "bg-white"}`}>
@@ -48,7 +58,7 @@ const HeroSection = () => {
                         </p>
 
                         <button
-                            onClick={() => navigate("/login")}
+                            onClick={navigateToLogin}
                             className={`mt-8 px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white`}
                         >
                             Explore Now
