@@ -32,7 +32,9 @@ public class StripeWebhookController {
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String sigHeader
     ) throws Exception {
-        log.info("🔥 Stripe webhook received");
+        log.info("Webhook hit, sigHeader={}", sigHeader != null);
+
+        log.info("Stripe webhook received");
         Event event;
         try{
             event = Webhook.constructEvent(
