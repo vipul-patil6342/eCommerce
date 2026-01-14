@@ -41,8 +41,10 @@ public class StripeWebhookController {
                     payload,sigHeader,webhookSecret
             );
         } catch (SignatureVerificationException e) {
-            throw new BadRequestException(e.getMessage());
+            log.error("Invalid Stripe signature", e);
+            return ResponseEntity.ok("Invalid signature ignored");
         }
+
 
         if("checkout.session.completed".equals(event.getType())){
             Session session = (Session) event.getDataObjectDeserializer().getObject().get();
