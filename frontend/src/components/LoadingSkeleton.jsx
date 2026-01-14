@@ -1,11 +1,28 @@
-const CustomLoading = ({ darkMode }) => (
-    <div className="flex h-screen items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div
-            className={`h-10 w-10 animate-spin rounded-full border-4 
-        ${darkMode ? "border-white" : "border-black"} border-t-transparent`}
-        />
-    </div>
-);
+const CustomLoading = ({ darkMode }) => {
+    return (
+        <div className={`flex items-center justify-center h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
+            <style>
+                {`
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            .spinner {
+                animation: spin 1s linear infinite;
+            }
+        `}
+            </style>
+
+            <div
+                className={`spinner w-16 h-16 rounded-full border-4 ${darkMode
+                    ? 'border-gray-700 border-t-orange-500'
+                    : 'border-gray-300 border-t-orange-600'
+                    }`}
+            />
+        </div>
+    );
+};
+
 
 const LoadingSkeleton = ({ darkMode }) => {
     return (
