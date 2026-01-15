@@ -5,10 +5,14 @@ import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.vipulpatil.eCommerce.entity.Order;
+import com.vipulpatil.eCommerce.entity.OrderItem;
+import com.vipulpatil.eCommerce.entity.Product;
 import com.vipulpatil.eCommerce.entity.type.OrderStatus;
 import com.vipulpatil.eCommerce.error.BadRequestException;
 import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.OrderRepository;
+import com.vipulpatil.eCommerce.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +22,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class StripeWebhookService {
+    private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
 
     @Value("${stripe.webhook-secret}")
     private String webhookSecret;
 
-    private final OrderService orderService;
     private final CartService cartService;
 
     public void processWebhook(String payload, String sigHeader){
@@ -58,6 +62,7 @@ public class StripeWebhookService {
 
     }
 
+    @Transactional
     private void handleCheckoutCompleted(Event event) {
         Session session = (Session) event
                 .getDataObjectDeserializer()
@@ -72,6 +77,18 @@ public class StripeWebhookService {
         if (order.getStatus() == OrderStatus.PAID) {
             log.info("Order {} already PAID", orderId);
             return;
+        }
+
+        for(OrderItem item : order.getItems()){
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+            if(product.getStock() < item.getQuantity()){
+                throw new BadRequestException("Insufficient stock");
+            }
+
+            product.setStock(product.getStock() - item.getQuantity());
+            productRepository.save(product);
         }
 
         order.setStatus(OrderStatus.PAID);
