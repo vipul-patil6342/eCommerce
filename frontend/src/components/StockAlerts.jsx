@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentPage } from '../features/product/productSlice';
 import { CustomLoading } from './LoadingSkeleton';
 import { getStockAlerts } from '../features/product/productThunk';
-import { AlertCircle, Package, DollarSign } from 'lucide-react';
+import { AlertCircle, Package } from 'lucide-react';
 
 const StockAlerts = () => {
 
@@ -115,7 +115,7 @@ const StockAlerts = () => {
                                     }`}
                             >
                                 {/* Product Image */}
-                                <div className={`h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} relative`}>
+                                <div className={`h-24 w-24 shrink-0 rounded-lg overflow-hidden ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} relative`}>
                                     {product.imageUrl ? (
                                         <img
                                             src={product.imageUrl}
@@ -157,13 +157,10 @@ const StockAlerts = () => {
 
                                     {/* Price & Stock Info */}
                                     <div className="flex items-center gap-6">
-                                        <div className="flex items-center gap-1">
-                                            <DollarSign className={`w-4 h-4 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
-                                            <p className={`font-bold ${darkMode ? 'text-green-400' : 'text-green-600'
-                                                }`}>
-                                                {product.price ? product.price.toFixed(2) : 'N/A'}
-                                            </p>
-                                        </div>
+                                        <p className={`font-bold ${darkMode ? 'text-green-400' : 'text-green-600'
+                                            }`}>
+                                            ₹ {product.price ? product.price.toFixed(2) : 'N/A'}
+                                        </p>
 
                                         {/* Stock Status */}
                                         <div className="flex items-center gap-2">
