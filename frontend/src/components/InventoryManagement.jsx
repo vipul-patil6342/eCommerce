@@ -404,7 +404,7 @@ const InventoryManagement = () => {
                                             <td className={`px-4 sm:px-6 py-4 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{product.description.substring(0, 30)}</td>
                                             <td className={`px-4 sm:px-6 py-4 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{product.category}</td>
                                             <td className={`px-4 sm:px-6 py-4 text-sm text-right font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{product.stock}</td>
-                                            <td className={`px-4 sm:px-6 py-4 text-sm text-right font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>${product.price.toFixed(2)}</td>
+                                            <td className={`px-4 sm:px-6 py-4 text-sm text-right font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>₹{product.price.toFixed(2)}</td>
                                             <td className="px-4 sm:px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <button
