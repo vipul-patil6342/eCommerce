@@ -174,7 +174,7 @@ const StockAlerts = () => {
                                         </div>
 
                                         {/* Stock Progress Bar */}
-                                        <div className={`w-24 rounded-full h-2 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'
+                                        <div className={`hidden md:block w-24 rounded-full h-2 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'
                                             }`}>
                                             <div
                                                 className={`h-2 rounded-full transition-all ${getStockBarColor(product.stock)}`}
