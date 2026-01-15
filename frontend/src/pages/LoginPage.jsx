@@ -96,7 +96,7 @@ export default function LoginPage() {
             className={`flex-1 transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
                 }`}
         >
-            <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
+            <div className="grid grid-cols-1 md:grid-cols-2 h-full">
                 {/* LEFT SECTION */}
                 <div
                     className={`flex items-center justify-center p-4 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'

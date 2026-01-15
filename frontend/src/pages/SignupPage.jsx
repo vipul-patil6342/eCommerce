@@ -104,7 +104,6 @@ export default function SignupPage() {
         const resultAction = await dispatch(signupUser(userData));
         if (signupUser.fulfilled.match(resultAction)) {
             dispatch(sendOtp({ email: userData.username }));
-            console.log("send otp called")
             navigate("/otp");
         } else {
             dispatch(clearSignupData());
@@ -117,7 +116,7 @@ export default function SignupPage() {
             : 'bg-white text-gray-900'
             }`}>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+            <div className="grid grid-cols-1 md:grid-cols-2 h-full">
 
                 {isLoading && <CustomLoading darkMode={darkMode} />}
 
