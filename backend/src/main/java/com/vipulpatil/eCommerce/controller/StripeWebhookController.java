@@ -7,11 +7,15 @@ import com.stripe.net.Webhook;
 import com.vipulpatil.eCommerce.entity.Order;
 import com.vipulpatil.eCommerce.entity.type.OrderStatus;
 import com.vipulpatil.eCommerce.error.BadRequestException;
+import com.vipulpatil.eCommerce.error.ResourceNotFoundException;
 import com.vipulpatil.eCommerce.repository.OrderRepository;
 import com.vipulpatil.eCommerce.service.CartService;
+import com.vipulpatil.eCommerce.service.StripeWebhookService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,46 +30,29 @@ public class StripeWebhookController {
 
     private final OrderRepository orderRepository;
     private final CartService cartService;
+    private final StripeWebhookService stripeWebhookService;
 
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(
-            @RequestBody String payload,
-            @RequestHeader("Stripe-Signature") String sigHeader
+            HttpServletRequest request,
+            @RequestBody String payload
     ) throws Exception {
-        log.info("Webhook hit, sigHeader={}", sigHeader != null);
 
-        log.info("Stripe webhook received");
-        Event event;
-        try{
-            event = Webhook.constructEvent(
-                    payload,sigHeader,webhookSecret
-            );
-        } catch (SignatureVerificationException e) {
-            log.error("Invalid Stripe signature", e);
-            return ResponseEntity.ok("Invalid signature ignored");
+        String sigHeader = request.getHeader("Stripe-Signature");
+
+        if (sigHeader == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Missing Stripe-Signature header");
         }
 
-
-        if("checkout.session.completed".equals(event.getType())){
-            Session session = (Session) event.getDataObjectDeserializer().getObject().get();
-
-            Long orderId = Long.valueOf(session.getMetadata().get("orderId"));
-
-            Order order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new RuntimeException("Order not found"));
-
-            if(order.getStatus() == OrderStatus.PAID){
-                return ResponseEntity.ok("order already processed");
-            }
-
-            order.setStatus(OrderStatus.PAID);
-            order.setPaymentId(session.getPaymentIntent());
-
-            orderRepository.save(order);
-
-            cartService.clearCart(order.getUser().getId());
+        try {
+            stripeWebhookService.processWebhook(payload, sigHeader);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error handling event");
         }
 
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("Webhook processed");
+
     }
 }
