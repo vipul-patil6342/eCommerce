@@ -87,7 +87,7 @@ export default function SignupPage() {
         }
 
         //Validate password pattern
-        if(!isValidPasswordPattern(formData.password)){
+        if (!isValidPasswordPattern(formData.password)) {
             setError('Password must contain uppercase, lowercase, number, and special character');
             return;
         }
@@ -127,9 +127,8 @@ export default function SignupPage() {
             : 'bg-white text-gray-900'
             }`}>
 
+            {isLoading && <CustomLoading darkMode={darkMode} />}
             <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-
-                {isLoading && <CustomLoading darkMode={darkMode} />}
 
                 <div className={`flex items-center justify-center p-4 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                     <div className="w-full max-w-md">

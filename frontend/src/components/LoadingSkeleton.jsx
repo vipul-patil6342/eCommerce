@@ -1,23 +1,15 @@
 const CustomLoading = ({ darkMode }) => {
     return (
-        <div className={`flex items-center justify-center h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
-            <style>
-                {`
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-            .spinner {
-                animation: spin 1s linear infinite;
-            }
-        `}
-            </style>
-
+        <div
+            className={`fixed inset-0 z-50 flex items-center justify-center
+            ${darkMode ? 'bg-gray-900/80' : 'bg-white/80'}`}
+        >
             <div
-                className={`spinner w-16 h-16 rounded-full border-4 ${darkMode
+                className={`w-16 h-16 rounded-full border-4 animate-spin
+                ${darkMode
                     ? 'border-gray-700 border-t-orange-500'
                     : 'border-gray-300 border-t-orange-600'
-                    }`}
+                }`}
             />
         </div>
     );
