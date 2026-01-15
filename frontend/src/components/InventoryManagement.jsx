@@ -483,7 +483,7 @@ const InventoryManagement = () => {
                                             </div>
                                             <div>
                                                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Price</p>
-                                                <p className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>${product.price.toFixed(2)}</p>
+                                                <p className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>₹{product.price.toFixed(2)}</p>
                                             </div>
                                         </div>
                                     </div>
