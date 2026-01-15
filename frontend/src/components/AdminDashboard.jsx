@@ -39,7 +39,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Total Products
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 {totals?.totalProducts || 0}
                             </p>
                         </div>
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Total Users
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 {totals?.totalUsers || 0}
                             </p>
                         </div>
@@ -57,7 +57,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Lifetime Revenue
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 ₹ {totals?.totalRevenue || 0}
                             </p>
                         </div>
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Total Orders
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 {totals?.totalOrders || 0}
                             </p>
                         </div>
@@ -104,7 +104,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Products Added
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 {filtered?.totalProducts || 0}
                             </p>
                         </div>
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 New Users
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 {filtered?.totalUsers || 0}
                             </p>
                         </div>
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Period Revenue
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 ₹ {filtered?.totalRevenue || 0}
                             </p>
                         </div>
@@ -131,7 +131,7 @@ const AdminDashboard = () => {
                             <h3 className={`text-sm md:text-base font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'} mb-3`}>
                                 Period Orders
                             </h3>
-                            <p className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            <p className={`text-sm md:text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 {filtered?.totalOrders || 0}
                             </p>
                         </div>
