@@ -98,13 +98,13 @@ function ProductCard({ product }) {
             {/* Product Info */}
             <div className="p-2 flex flex-col flex-1">
                 <h3
-                    className={`text-sm font-medium mb-3 line-clamp-2
+                    className={`text-sm font-medium mb-2 line-clamp-2 h-10
                     ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}
                 >
                     {product.name}
                 </h3>
 
-                <div className="mb-1">
+                <div className="mb-2">
                     <span
                         className={`text-lg font-bold
                         ${darkMode ? 'text-white' : 'text-gray-900'}`}
@@ -114,7 +114,7 @@ function ProductCard({ product }) {
                 </div>
 
                 {isLowStock && !isOutOfStock && (
-                    <div className="mb-1 inline-block rounded-full bg-orange-100 px-3 py-1 text-xs text-center font-semibold text-orange-700">
+                    <div className="mb-2 inline-block rounded-full bg-orange-100 px-3 py-1 text-xs text-center font-semibold text-orange-700">
                         🔥Only {product.stock} left
                     </div>
                 )}
