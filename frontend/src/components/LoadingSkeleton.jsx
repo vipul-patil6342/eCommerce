@@ -2,7 +2,7 @@ const CustomLoading = ({ darkMode }) => {
     return (
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center
-            ${darkMode ? 'bg-gray-900/80' : 'bg-white/80'}`}
+            ${darkMode ? 'bg-gray-900' : 'bg-white'}`}
         >
             <div
                 className={`w-16 h-16 rounded-full border-4 animate-spin
