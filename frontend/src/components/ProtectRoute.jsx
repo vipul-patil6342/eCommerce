@@ -9,7 +9,6 @@ const ProtectRoute = ({ role }) => {
 
     return (
         <>
-            {/* Overlay loader instead of early return */}
             {isLoading && <CustomLoading darkMode={darkMode} />}
 
             {!isAuthenticated && !isLoading && (

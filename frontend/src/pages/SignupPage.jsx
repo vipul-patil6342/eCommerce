@@ -45,9 +45,14 @@ export default function SignupPage() {
         return emailRegex.test(email);
     };
 
-    const isValidPassword = (password) => {
-        return password.length >= 6;
+    const isValidPasswordLength = (password) => {
+        return password.length >= 8;
     };
+
+    const isValidPasswordPattern = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/;
+        return regex.test(password);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -76,8 +81,14 @@ export default function SignupPage() {
         }
 
         // Validate password strength
-        if (!isValidPassword(formData.password)) {
+        if (!isValidPasswordLength(formData.password)) {
             setError('Password must be at least 6 characters long');
+            return;
+        }
+
+        //Validate password pattern
+        if(!isValidPasswordPattern(formData.password)){
+            setError('Password must contain uppercase, lowercase, number, and special character');
             return;
         }
 

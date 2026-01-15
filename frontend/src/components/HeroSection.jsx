@@ -22,8 +22,6 @@ const HeroSection = () => {
         navigate("/login");
     }
 
-
-
     return (
         <div className={`w-full transition-colors duration-500 ${darkMode ? "bg-gray-900" : "bg-white"}`}>
             <section className="min-h-[calc(100vh-10vh)] flex flex-col md:grid md:grid-cols-2 p-6 gap-6">
