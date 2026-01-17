@@ -28,7 +28,7 @@ This project demonstrates a production-grade e-commerce platform with real-world
 - Real-time cart total calculation
 - Persistent cart storage
 
-###Wishlist Management
+### Wishlist Management
 
 -Add/remove products to wishlist
 -View wishlist items
