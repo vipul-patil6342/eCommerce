@@ -142,7 +142,7 @@ Ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/vipul-patil6342/eCommerce.git]
+git clone https://github.com/vipul-patil6342/eCommerce.git
 cd eCommerce
 ```
 
@@ -168,102 +168,43 @@ npm install
 
 ### Backend Configuration
 
-Create `backend/src/main/resources/application.application`:
-# ============================================
-# APPLICATION CONFIGURATION
-# ============================================
-
-# Application Configuration
+Create `backend/src/main/resources/application.properties`:
 spring.application.name=eCommerce
 server.port=8080
 server.servlet.context-path=/api/v1
 
-# ============================================
-# DATABASE CONFIGURATION
-# ============================================
-
+# Database
 spring.datasource.url=your-db-url
 spring.datasource.username=your-db-username
 spring.datasource.password=your-db-password
 
-# ============================================
-# JPA/HIBERNATE CONFIGURATION
-# ============================================
-
+# JPA
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
-spring.jpa.properties.hibernate.format_sql=true
 
-# ============================================
-# JWT CONFIGURATION
-# ============================================
-
+# JWT
 jwt.secretKey=your-jwt-secret-key
 jwt.accessTokenExpiration=your-access-token-expiration-time
 jwt.refreshTokenExpiration=your-refresh-token-expiration-time
 
-# ============================================
-# FRONTEND CONFIGURATION
-# ============================================
-
+# Frontend
 app.frontend.url=your-frontend-url
 
-# ============================================
-# LOGGING CONFIGURATION
-# ============================================
-
-logging.level.root=INFO
-logging.level.com.vipulpatil.eCommerce=DEBUG
-logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
-
-# ============================================
-# CLOUDINARY CONFIGURATION (IMAGE STORAGE)
-# ============================================
-
+# Cloudinary
 cloudinary.cloud-name=your-cloudinary-cloud-name
-cloudinary.api-key=your-cloudinary-cloud-key
-cloudinary.api-secret=your-cloudinary-cloud-secret
+cloudinary.api-key=your-cloudinary-api-key
+cloudinary.api-secret=your-cloudinary-api-secret
 
-# ============================================
-# COOKIE CONFIGURATION
-# ============================================
-
-app.cookie.secure=${COOKIE_SECURE}
-app.cookie.same-site=${COOKIE_SAME_SITE}
-
-# ============================================
-# FILE UPLOAD CONFIGURATION
-# ============================================
-
-spring.servlet.multipart.max-file-size=5MB
-spring.servlet.multipart.max-request-size=5MB
-
-# ============================================
-# EMAIL CONFIGURATION (BREVO)
-# ============================================
-
-brevo.api-key=your-brevo-api-key
-smtp.from-email=your-smtp-email
-
-# ============================================
-# REDIS CACHE CONFIGURATION
-# ============================================
-
+# Redis
 spring.cache.type=redis
 spring.data.redis.host=your-redis-host
 spring.data.redis.port=your-redis-port
-spring.data.redis.username=your-redis-username
-spring.data.redis.password=your-redis-password
-spring.cache.redis.time-to-live=600000
-spring.cache.redis.cache-null-values=false
 
-# ============================================
-# STRIPE PAYMENT CONFIGURATION
-# ============================================
+# Stripe
+stripe.secret-key=your-stripe-secret-key
+stripe.public-key=your-stripe-public-key
+stripe.webhook-secret=your-stripe-webhook-secret
 
-stripe.secret-key= your-stripe-secret-key
-stripe.public-key= your-stripe-public-key
-stripe.webhook-secret= your-stripe-webhook-secret
 
 Create `backend/src/main/resources/application.yml`:
 
@@ -280,9 +221,7 @@ spring:
             client-secret: your-github-oauth2-cliet-secret
 
 
-# ============================================
 # FRONTEND - .env
-# ============================================
 
 # API Configuration
 VITE_BACKEND_URL=your-backend-url
