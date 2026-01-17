@@ -169,41 +169,41 @@ npm install
 ### Backend Configuration
 
 Create `backend/src/main/resources/application.properties`:
-spring.application.name=eCommerce
-server.port=8080
-server.servlet.context-path=/api/v1
+- spring.application.name=eCommerce
+- server.port=8080
+- server.servlet.context-path=/api/v1
 
 # Database
-spring.datasource.url=your-db-url
-spring.datasource.username=your-db-username
-spring.datasource.password=your-db-password
+- spring.datasource.url=your-db-url
+- spring.datasource.username=your-db-username
+- spring.datasource.password=your-db-password
 
 # JPA
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=false
+- spring.jpa.hibernate.ddl-auto=update
+- spring.jpa.show-sql=false
 
 # JWT
-jwt.secretKey=your-jwt-secret-key
-jwt.accessTokenExpiration=your-access-token-expiration-time
-jwt.refreshTokenExpiration=your-refresh-token-expiration-time
+- jwt.secretKey=your-jwt-secret-key
+- jwt.accessTokenExpiration=your-access-token-expiration-time
+- jwt.refreshTokenExpiration=your-refresh-token-expiration-time
 
 # Frontend
-app.frontend.url=your-frontend-url
+- app.frontend.url=your-frontend-url
 
 # Cloudinary
-cloudinary.cloud-name=your-cloudinary-cloud-name
-cloudinary.api-key=your-cloudinary-api-key
-cloudinary.api-secret=your-cloudinary-api-secret
+- cloudinary.cloud-name=your-cloudinary-cloud-name
+- cloudinary.api-key=your-cloudinary-api-key
+- cloudinary.api-secret=your-cloudinary-api-secret
 
 # Redis
-spring.cache.type=redis
-spring.data.redis.host=your-redis-host
-spring.data.redis.port=your-redis-port
+- spring.cache.type=redis
+- spring.data.redis.host=your-redis-host
+- spring.data.redis.port=your-redis-port
 
 # Stripe
-stripe.secret-key=your-stripe-secret-key
-stripe.public-key=your-stripe-public-key
-stripe.webhook-secret=your-stripe-webhook-secret
+- stripe.secret-key=your-stripe-secret-key
+- stripe.public-key=your-stripe-public-key
+- stripe.webhook-secret=your-stripe-webhook-secret
 
 
 Create `backend/src/main/resources/application.yml`:
