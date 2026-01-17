@@ -83,7 +83,6 @@ This project demonstrates a production-grade e-commerce platform with real-world
 ## 📂 Project Structure
 
 ```
-```
 eCommerce/
 │
 ├── backend/
@@ -122,21 +121,21 @@ eCommerce/
 │   └── tailwind.config.js
 │
 └── README.md
-```
+
 ```
 
 ## 📦 Prerequisites
 
 Ensure you have the following installed:
 
-- **Java 21** ([Download](https://www.oracle.com/java/technologies/downloads/))
-- **Maven 3.6+** ([Download](https://maven.apache.org/download.cgi))
-- **Node.js 16+** ([Download](https://nodejs.org/))
+- **Java 21** 
+- **Maven 3.6+** 
+- **Node.js 16+**
 - **npm 8+** (comes with Node.js)
-- **MySQL 8.0+** ([Download](https://dev.mysql.com/downloads/mysql/))
-- **Redis** ([Download](https://redis.io/download)) (optional, for caching)
-- **Git** ([Download](https://git-scm.com/))
-- **Stripe Account** ([Sign up](https://stripe.com/))
+- **MySQL 8.0+** 
+- **Redis** (optional, for caching)
+- **Git** 
+- **Stripe Account**
 
 ## 🚀 Installation
 
