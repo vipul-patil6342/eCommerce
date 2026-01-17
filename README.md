@@ -175,45 +175,45 @@ server.port=8080
 server.servlet.context-path=/api/v1
 ```
 
-# Database
+### Database
 ```
 spring.datasource.url=your-db-url
 spring.datasource.username=your-db-username
 spring.datasource.password=your-db-password
 ```
 
-# JPA
+### JPA
 ```
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
 ```
 
-# JWT
+### JWT
 ```
 jwt.secretKey=your-jwt-secret-key
 jwt.accessTokenExpiration=your-access-token-expiration-time
 jwt.refreshTokenExpiration=your-refresh-token-expiration-time
 ```
 
-# Frontend
+### Frontend
 ```
 app.frontend.url=your-frontend-url
 ```
-# Cloudinary
+### Cloudinary
 ```
 cloudinary.cloud-name=your-cloudinary-cloud-name
 cloudinary.api-key=your-cloudinary-api-key
 cloudinary.api-secret=your-cloudinary-api-secret
 ```
 
-# Redis
+### Redis
 ```
 spring.cache.type=redis
 spring.data.redis.host=your-redis-host
 spring.data.redis.port=your-redis-port
 ```
 
-# Stripe
+### Stripe
 ```
 stripe.secret-key=your-stripe-secret-key
 stripe.public-key=your-stripe-public-key
@@ -236,15 +236,15 @@ spring:
 ```
 
 
-# FRONTEND - .env
+### FRONTEND - .env
 
-# API Configuration
+### API Configuration
+```
 VITE_BACKEND_URL=your-backend-url
+```
 
 
 ## 🎮 Running the Application
-
-Run Individually
 
 **Terminal 1 - Backend:**
 ```bash
