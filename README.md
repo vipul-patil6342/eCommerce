@@ -207,18 +207,19 @@ Create `backend/src/main/resources/application.properties`:
 
 
 Create `backend/src/main/resources/application.yml`:
-
+```
 spring:
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: your-google-oauth2-cliet-id
-            client-secret: your-google-oauth2-cliet-secret
+            client-id: your-google-oauth2-client-id
+            client-secret: your-google-oauth2-client-secret
           github:
-            client-id: your-github-oauth2-cliet-id
-            client-secret: your-github-oauth2-cliet-secret
+            client-id: your-github-oauth2-client-id
+            client-secret: your-github-oauth2-client-secret
+```
 
 
 # FRONTEND - .env
