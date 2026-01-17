@@ -324,9 +324,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **Vipul Patil**
 - 🎯 Aspiring Full-Stack Developer
 - 💡 Passionate about backend development and scalable web applications
-- 📧 Email: your.email@example.com
-- 🔗 LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- 🐙 GitHub: [Your GitHub](https://github.com/yourprofile)
 
 **Happy Coding! 🚀**
 
