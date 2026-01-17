@@ -112,6 +112,7 @@ eCommerce/
 │   │   ├── components/
 │   │   ├── features/
 │   │   ├── pages/
+│   │   ├── store/
 │   │   ├── utils/
 │   │   ├── App.jsx
 │   │   ├── main.jsx
