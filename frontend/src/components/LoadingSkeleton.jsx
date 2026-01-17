@@ -53,7 +53,7 @@ const CustomLoginLoading = ({ darkMode }) => {
                     Waking up the server...
                 </h2>
                 <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    The server may take <span className="font-semibold text-orange-500">50 seconds</span> or more to start due to inactivity on the free hosting plan. 
+                    The server may take <span className="font-semibold text-orange-500">2 minutes</span> or more to start due to inactivity on the free hosting plan. 
                     <br />Thank you for your patience!
                 </p>
             </div>
