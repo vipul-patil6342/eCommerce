@@ -30,9 +30,9 @@ This project demonstrates a production-grade e-commerce platform with real-world
 
 ### Wishlist Management
 
--Add/remove products to wishlist
--View wishlist items
--Move items from wishlist to cart
+- Add/remove products to wishlist
+- View wishlist items
+- Move items from wishlist to cart
 
 ### Order Management
 - Place orders from cart
